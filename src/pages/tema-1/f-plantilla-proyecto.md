@@ -6,7 +6,8 @@ Esta es la plantilla de la actividad [A1.4](/tema-1/e-actividades). Sirve para d
 
 Si es la primera vez que diseñas una app, es normal no saber por dónde empezar. Ve por orden: cada apartado se apoya en el anterior. Las cajas **«Cómo decidir esto»** explican qué se espera y cómo llegar a la respuesta; las de **«Ejemplo»** muestran cómo quedaría en una app inventada.
 
-:::tip Antes de empezar
+:::tip
+Antes de empezar
 Léete la plantilla entera de un tirón antes de rellenar nada. Muchas decisiones del principio se entienden mejor cuando sabes qué te van a preguntar después.
 :::
 
@@ -28,7 +29,8 @@ El nombre puede cambiar más adelante. No te bloquees aquí.
 
 > **Escribe aquí una sola frase:** qué hace tu app y para quién.
 
-:::note Cómo decidir esto
+:::note
+Cómo decidir esto
 Si no consigues explicarla en una frase, casi siempre es señal de que la idea todavía está borrosa o de que son en realidad dos aplicaciones distintas.
 
 Una fórmula que ayuda:
@@ -38,7 +40,8 @@ Una fórmula que ayuda:
 Evita empezar por la tecnología («una app que usa el GPS y una base de datos»). La tecnología viene después: primero el problema.
 :::
 
-:::info Ejemplo
+:::info
+Ejemplo
 «Una app que permite a estudiantes de FP registrar las horas que dedican a cada módulo para detectar en qué asignaturas van justos de tiempo.»
 :::
 
@@ -48,7 +51,8 @@ Evita empezar por la tecnología («una app que usa el GPS y una base de datos»
 
 > **¿Qué problema resuelve? ¿Cómo se resuelve hoy sin tu app?**
 
-:::note Cómo decidir esto
+:::note
+Cómo decidir esto
 Toda app que merece la pena sustituye a algo peor: una libreta, una hoja de cálculo, la memoria, un grupo de WhatsApp, o simplemente no hacer nada.
 
 Si la respuesta a «¿cómo se hace ahora?» es «no se hace», pregúntate por qué. A veces es una oportunidad real; otras, señal de que nadie lo necesita.
@@ -62,7 +66,8 @@ Si la respuesta a «¿cómo se hace ahora?» es «no se hace», pregúntate por 
 
 > **¿Quién la va a usar? Describe a una persona concreta.**
 
-:::note Cómo decidir esto
+:::note
+Cómo decidir esto
 «Todo el mundo» no es un público. Cuanto más concreto, más fácil resulta decidir después qué funcionalidades entran y cuáles no.
 
 Piensa en **una persona real** y responde:
@@ -75,7 +80,8 @@ Piensa en **una persona real** y responde:
 Recuerda lo visto en [dispositivos móviles](/tema-1/a-dispositivos-moviles): quien usa un móvil suele estar haciendo otra cosa a la vez.
 :::
 
-:::info Ejemplo
+:::info
+Ejemplo
 «Marta, 19 años, estudia 2º de DAM. Usa el móvil constantemente y no le asustan las apps nuevas. Abriría la app al terminar cada sesión de estudio, unos segundos, muchas veces al día. Si falla no es grave, pero si pierde los datos acumulados de un mes, dejaría de usarla.»
 :::
 
@@ -100,7 +106,8 @@ Recuerda lo visto en [dispositivos móviles](/tema-1/a-dispositivos-moviles): qu
 | O1 | |
 | O2 | |
 
-:::note Cómo decidir esto
+:::note
+Cómo decidir esto
 Este es el apartado donde más gente se equivoca, y siempre en la misma dirección: **de más**.
 
 Criterio para separar los dos grupos: si quitas una funcionalidad imprescindible, la app deja de resolver el problema del apartado 2. Si la quitas y la app sigue siendo útil, es opcional.
@@ -113,7 +120,8 @@ Formula cada una desde quien la usa, no desde el código:
 - Mal: «Método `insertarSesion()` en el DAO.»
 :::
 
-:::warning El error clásico
+:::warning
+El error clásico
 «Registro de usuarios, login, perfil, chat entre usuarios, notificaciones push, modo oscuro, exportar a PDF, panel de estadísticas…»
 
 Eso es el plan de un equipo durante meses. Se evalúa la calidad de lo que entregas, no el tamaño del plan inicial: una app modesta y bien terminada puntúa más que una enorme a medias.
@@ -131,7 +139,8 @@ Eso es el plan de un equipo durante meses. Se evalúa la calidad de lo que entre
 | | | |
 | | | |
 
-:::note Cómo decidir esto
+:::note
+Cómo decidir esto
 Repasa tus funcionalidades imprescindibles: cada una necesita al menos una pantalla donde ocurra.
 
 Un patrón que sirve para la mayoría de las apps de este curso:
@@ -150,7 +159,8 @@ Con 3–5 pantallas hay de sobra. La columna «se llega desde» importa: si una 
 
 > **Dibuja las pantallas principales.**
 
-:::note Cómo decidir esto
+:::note
+Cómo decidir esto
 **A mano y fotografiado es perfectamente válido**, y de hecho es lo recomendable: dibujar rápido y feo invita a cambiar las cosas; una maqueta bonita da pena tirarla.
 
 En cada boceto marca dónde va el título, los datos, los botones y qué ocurre al pulsarlos. Con dibujar la lista, el detalle y el formulario es suficiente.
@@ -169,7 +179,8 @@ Y ten presente lo de la [densidad de pantalla](/tema-1/d-emuladores-y-perfiles):
 | | | |
 | | | |
 
-:::note Cómo decidir esto
+:::note
+Cómo decidir esto
 Aquí no hace falta saber nada de bases de datos todavía: eso llega en el tema 4. Ahora solo hay que identificar **de qué cosas guarda información** la app.
 
 Un truco: subraya los sustantivos de tu descripción del apartado 1. Suelen ser los tipos de dato.
@@ -177,7 +188,8 @@ Un truco: subraya los sustantivos de tu descripción del apartado 1. Suelen ser 
 Para cada uno, apunta qué necesitas saber de él. Y pregúntate si unos se relacionan con otros («cada sesión pertenece a un módulo»).
 :::
 
-:::info Ejemplo
+:::info
+Ejemplo
 | Tipo de dato | Campos | Ejemplo |
 |---|---|---|
 | Módulo | nombre, color | «Programación», azul |
@@ -197,7 +209,8 @@ Para cada uno, apunta qué necesitas saber de él. Y pregúntate si unos se rela
 | **Sensor o localización** | | 6 |
 | **Contenido multimedia** — foto, audio, vídeo o animación | | 7 |
 
-:::warning Este apartado decide si tu idea es viable
+:::warning
+Este apartado decide si tu idea es viable
 Si alguna casilla queda vacía, la idea **todavía no sirve** para el proyecto y habrá que ajustarla. Vale más descubrirlo ahora que en febrero.
 
 Si una no te encaja, hay dos salidas:
@@ -222,7 +235,8 @@ Ideas para desatascar las casillas difíciles:
 |--------------------|--------|
 | | |
 
-:::note Cómo decidir esto
+:::note
+Cómo decidir esto
 Anticipar problemas no es pesimismo: es lo que permite reaccionar sin perder el curso.
 
 Piensa en qué parte no tienes ni idea de cómo se hace, qué depende de algo externo (una API que puede caerse o pasar a ser de pago) y qué funcionalidad, si se complica, podrías recortar sin cargarte la app.

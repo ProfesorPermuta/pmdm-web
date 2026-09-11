@@ -1,3 +1,5 @@
+import NextPageButton from '@site/src/components/NextPageButton';
+
 # Emuladores, perfiles y dispositivos
 
 Probar en un solo dispositivo no basta: la aplicación se ejecutará en pantallas, densidades y versiones de Android muy distintas. El emulador permite cubrir esa variedad sin tener veinte teléfonos sobre la mesa.
@@ -22,7 +24,8 @@ Se gestionan desde el **Device Manager** (icono de teléfono en la barra lateral
 4. Revisar la configuración avanzada y darle un nombre descriptivo.
 5. **Finish**.
 
-:::tip Elegir la imagen del sistema
+:::tip
+Elegir la imagen del sistema
 Las imágenes con **Google Play** incluyen los servicios de Google (necesarios para mapas o notificaciones push). Las que solo dicen *Google APIs* no incluyen la tienda. Las imágenes **x86_64** son mucho más rápidas que las ARM en un PC.
 :::
 
@@ -145,3 +148,7 @@ Estos controles permiten probar en el aula situaciones que en un dispositivo rea
 3. Conectar por cable y aceptar en el teléfono el diálogo de autorización del ordenador.
 4. Comprobar con `adb devices` que aparece en la lista.
 5. El dispositivo ya se puede seleccionar como destino de ejecución en Android Studio.
+
+<NextPageButton to="/tema-1/e-actividades">
+Actividades del tema 1
+</NextPageButton>

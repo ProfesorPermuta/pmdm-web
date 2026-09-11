@@ -1,3 +1,5 @@
+import NextPageButton from '@site/src/components/NextPageButton';
+
 # El entorno: Android Studio, SDK y Gradle
 
 Android Studio es el entorno de desarrollo oficial para Android. Está construido sobre IntelliJ IDEA, así que si ya se ha usado IntelliJ el terreno resulta familiar.
@@ -13,7 +15,8 @@ Android Studio es el entorno de desarrollo oficial para Android. Está construid
 | Procesador | x86_64 con virtualización | Virtualización **activada en la BIOS** |
 | Sistema | Windows 10/11, macOS, Linux | — |
 
-:::warning Virtualización
+:::warning
+Virtualización
 El emulador de Android necesita virtualización por hardware. Si está desactivada en la BIOS/UEFI, el emulador no arranca o va inutilizablemente lento. En Windows suele aparecer como *Intel VT-x*, *AMD-V* o *SVM Mode*.
 :::
 
@@ -123,7 +126,8 @@ Los tres se confunden a menudo y significan cosas distintas:
 | `minSdk` | Versión mínima de Android en la que se puede instalar. Bajarla amplía el público pero obliga a comprobar compatibilidad. |
 | `targetSdk` | Versión para la que la app declara estar preparada. Determina qué comportamientos nuevos del sistema se le aplican. |
 
-:::tip Elegir `minSdk`
+:::tip
+Elegir `minSdk`
 Android Studio muestra, al crear el proyecto, el porcentaje de dispositivos cubierto por cada nivel de API. Un `minSdk` de 24 (Android 7.0) cubre prácticamente todo el parque actual sin arrastrar código de compatibilidad antiguo.
 :::
 
@@ -144,3 +148,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 ```
 
 Las **bibliotecas AndroidX** (Jetpack) existen en buena medida para esto: ofrecen una API única que internamente resuelve las diferencias entre versiones.
+
+<NextPageButton to="/tema-1/d-emuladores-y-perfiles">
+Emuladores, perfiles y dispositivos
+</NextPageButton>

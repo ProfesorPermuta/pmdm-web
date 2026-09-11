@@ -1,3 +1,5 @@
+import NextPageButton from '@site/src/components/NextPageButton';
+
 # Actividades del tema 1
 
 Las actividades son **abiertas**: se indica el objetivo y lo que hay que entregar, no una lista de pasos cerrada. El alcance concreto se acuerda en clase.
@@ -64,8 +66,13 @@ Este es el primer hito del proyecto continuo. La aplicación irá creciendo tema
 
 **Rellena la [plantilla de propuesta del Proyecto A](/tema-1/f-plantilla-proyecto).** Además de los huecos a completar, la plantilla explica en cada apartado cómo tomar la decisión y muestra ejemplos. Si es la primera vez que diseñas una aplicación desde cero, ve por orden.
 
-:::warning Requisito de viabilidad
+:::warning
+Requisito de viabilidad
 La propuesta debe permitir cubrir **todos** los criterios de evaluación del módulo — de ahí el apartado 8 de la plantilla. Una idea excelente que no dé pie a usar sensores o red obligaría a reformularla más adelante. Antes de empezar a desarrollar, la propuesta debe estar validada por el profesorado.
 :::
 
 **Criterios de evaluación:** 1a, 1b (y sienta la base de RA2 y RA3).
+
+<NextPageButton to="/tema-1/f-plantilla-proyecto">
+Plantilla: propuesta del Proyecto A
+</NextPageButton>

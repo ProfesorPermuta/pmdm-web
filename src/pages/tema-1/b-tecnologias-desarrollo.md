@@ -1,3 +1,5 @@
+import NextPageButton from '@site/src/components/NextPageButton';
+
 # Tecnologías de desarrollo móvil
 
 Aquí llegamos a una de las decisiones más importantes que harás como desarrollador: **cómo construir tu aplicación móvil**. No es una elección técnica sin consecuencias. El camino que escojas afecta a los lenguajes que usarás, las herramientas que dominará tu equipo, el rendimiento que tu usuario verá, y cuánto dinero costará mantener la aplicación en cinco años. Por eso conviene saber justificar la decisión.
@@ -109,6 +111,11 @@ En este curso trabajaremos con **Android nativo y Kotlin**. La decisión no es p
 
 - Entender bien una plataforma nativa hace mucho más fácil aprender después cualquier framework multiplataforma. Sabrás qué abstrae, qué oculta, y dónde está el límite real. Al revés no funciona: empezar en multiplataforma y luego intentar aprender nativo es confuso.
 
-:::note Importante: no es una recomendación universal
+:::note
+Importante: no es una recomendación universal
 Elegir Android nativo para el curso no significa que sea la respuesta correcta a todo proyecto. Algunos proyectos reales exigen React Native. Otros tienen sentido como PWA. Otros necesitan máximo rendimiento nativo. **Saber argumentar tu elección** forma parte del criterio de evaluación 1b.
 :::
+
+<NextPageButton to="/tema-1/c-entorno-android-studio">
+El entorno: Android Studio, SDK y Gradle
+</NextPageButton>

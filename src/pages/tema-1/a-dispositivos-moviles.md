@@ -1,3 +1,5 @@
+import NextPageButton from '@site/src/components/NextPageButton';
+
 # Dispositivos móviles: evolución, tipos y hardware
 
 Un **dispositivo móvil** es un equipo informático de tamaño reducido, alimentado por batería, con conectividad inalámbrica y pensado para usarse en movimiento. Esa definición parece obvia, pero cada una de esas cuatro características impone una restricción real al software que vamos a escribir durante el curso.
@@ -90,8 +92,9 @@ No todo lo que programamos es un teléfono. La misma base de conocimiento cubre:
 - **Dispositivos plegables** — la pantalla cambia de tamaño *durante* la ejecución de la aplicación.
 - **Sistemas embarcados** (televisores, automoción) — sin pantalla táctil, control por mando o voz.
 
-:::note Por qué importa
- Los dispositivos son muy distintos entre ellos, lo que obliga a crear aplicaciones responsive. Además el acceso a otras funcionalidades esta marcado por la versión de APK. Este tema se tratará más adelante.
+:::note
+Por qué importa
+Los dispositivos son muy distintos entre ellos, lo que obliga a crear aplicaciones responsive. Además el acceso a otras funcionalidades esta marcado por la versión de APK. Este tema se tratará más adelante.
 :::
 
 ---
@@ -161,4 +164,8 @@ Hablaremos de estos sensores en la unidad 6.
 | Entrada         | Teclado y ratón (precisos)      | Dedo (impreciso)                     |
 | Ciclo de vida   | La app vive hasta que se cierra | El sistema la suspende y la destruye |
 | Contexto de uso | Sentado, atención sostenida     | En movimiento, atención fragmentada  |
+
+<NextPageButton to="/tema-1/b-tecnologias-desarrollo">
+Tecnologías de desarrollo móvil
+</NextPageButton>
 
