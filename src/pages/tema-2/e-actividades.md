@@ -4,6 +4,27 @@ import NextPageButton from '@site/src/components/NextPageButton';
 
 Las actividades son **abiertas**: se indica el objetivo y lo que hay que entregar, no una lista de pasos cerrada. El alcance concreto se acuerda en clase.
 
+por cada actividad crea en una carpeta docs un adr con el siguiente formato (imagina el adr para A2.1).
+
+```
+0201.md
+
+```
+
+y dentro del documento:
+
+``` md
+# Análisis de una app de código abierto
+
+## Cuántas Activities tiene y qué destinos de navegación (pantallas) contiene, siguiendo el enfoque moderno visto en clase.
+
+Respuesta a la pregunta
+
+## Si usa Services, Broadcast Receivers o Content Providers, y para qué.
+...
+
+```
+
 ---
 
 ## A2.1 · Análisis de una app de código abierto
@@ -14,7 +35,7 @@ Analiza **Jetnews**, una aplicación de lectura de noticias dentro del repositor
 
 Sobre ella, elabora un **diagrama** (a mano, con una herramienta de diagramación, o incluso una tabla bien organizada) que muestre:
 
-- Qué Activities tiene y qué pantalla representa cada una.
+- Cuántas Activities tiene y qué destinos de navegación (pantallas) contiene, siguiendo el enfoque moderno visto en clase.
 - Si usa Services, Broadcast Receivers o Content Providers, y para qué.
 - Qué contiene su `AndroidManifest.xml`: componentes declarados, permisos solicitados, cuál es la actividad de arranque.
 - Cómo está organizada la estructura de paquetes.

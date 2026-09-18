@@ -472,8 +472,8 @@ a:hover{ color: var(--accent-strong); }
         </div>
         <div class="card">
           <div class="num">02</div>
-          <h3>Intents</h3>
-          <p>Cómo se comunican los componentes entre sí y con el sistema.</p>
+          <h3>Intents y Navigation Component</h3>
+          <p>Cómo se comunican los componentes, y cómo se navega hoy entre pantallas: una Activity, varios destinos.</p>
         </div>
         <div class="card">
           <div class="num">03</div>
@@ -556,7 +556,7 @@ a:hover{ color: var(--accent-strong); }
     <div class="content">
       <div class="two-col">
         <ul class="list">
-          <li><span class="bul">→</span><span><b>Una pantalla</b><span class="d"> (login, listado, detalle, ajustes...), aunque varias pantallas pueden convivir en una misma Activity con fragmentos o navegación.</span></span></li>
+          <li><span class="bul">→</span><span><b>Una pantalla</b><span class="d"> (login, listado, detalle, ajustes...). En este curso, todas conviven dentro de una <b>única Activity</b> como destinos de navegación.</span></span></li>
           <li><span class="bul">→</span><span><b>Ciclo de vida propio</b><span class="d">, gestionado por el sistema: se crea, se pausa, se reanuda, se destruye.</span></span></li>
         </ul>
         <div class="term">
@@ -710,11 +710,11 @@ a:hover{ color: var(--accent-strong); }
             </marker>
           </defs>
           <rect class="box" x="20" y="35" width="180" height="50" rx="10"/>
-          <text x="110" y="65" text-anchor="middle" class="lbl-strong">Activity A</text>
+          <text x="110" y="65" text-anchor="middle" class="lbl-strong">Componente propio</text>
           <path class="arrow-accent" d="M205,60 H320" marker-end="url(#arrowhead2)"/>
           <text x="262" y="48" text-anchor="middle" class="lbl">Intent</text>
           <rect class="box-accent" x="325" y="35" width="210" height="50" rx="10"/>
-          <text x="430" y="65" text-anchor="middle" class="lbl-strong">Activity B / Sistema</text>
+          <text x="430" y="65" text-anchor="middle" class="lbl-strong">Otro componente / Sistema</text>
         </svg>
       </div>
     </div>
@@ -729,7 +729,7 @@ a:hover{ color: var(--accent-strong); }
         <div class="card">
           <div class="num">EXPLÍCITO</div>
           <h3>Se sabe qué componente</h3>
-          <p>Indica exactamente qué componente se quiere lanzar. Típico al navegar entre pantallas de la misma app.</p>
+          <p>Indica exactamente qué componente se quiere lanzar: por ejemplo, un <code>Service</code> propio o una Activity de otra app conocida.</p>
         </div>
         <div class="card">
           <div class="num">IMPLÍCITO</div>
@@ -740,9 +740,9 @@ a:hover{ color: var(--accent-strong); }
       <div class="two-col" style="margin-top:20px;">
         <div class="term">
           <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><span class="term-label">explícito</span></div>
-          <div class="term-body"><span class="g">val</span> intent = Intent(<span class="c">this</span>, DetalleActivity::<span class="c">class</span>.java)
-intent.putExtra(<span class="a">"id_elemento"</span>, 42)
-startActivity(intent)</div>
+          <div class="term-body"><span class="g">val</span> intent = Intent(<span class="c">this</span>,
+    MiServicioDeSincronizacion::<span class="c">class</span>.java)
+startService(intent)</div>
         </div>
         <div class="term">
           <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><span class="term-label">implícito</span></div>
@@ -752,6 +752,46 @@ startActivity(intent)</div>
         </div>
       </div>
       <p class="foot-note">Extras: los datos que viajan con <code>putExtra</code> deben ser serializables (primitivos, String, Parcelable...).</p>
+    </div>
+  </section>
+
+  <!-- 12b -->
+  <section class="slide">
+    <div class="kicker">01 · Intents</div>
+    <h2 class="title">¿Y para moverse entre pantallas <em>propias</em>?</h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Antes</b><span class="d"> se lanzaba un Intent explícito hacia otra Activity para cambiar de pantalla dentro de la misma app.</span></span></li>
+        <li><span class="bul">→</span><span><b>En este curso, no</b><span class="d">: cada app tendrá una única Activity, y las pantallas serán destinos de navegación dentro de ella.</span></span></li>
+      </ul>
+      <p class="foot-note">Ese enfoque moderno se llama Navigation Component, y es lo que viene a continuación.</p>
+    </div>
+  </section>
+
+  <!-- 12c -->
+  <section class="slide">
+    <div class="kicker">01 · Navigation Component</div>
+    <h2 class="title">Una Activity, <em>muchos destinos</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Grafo de navegación</b><span class="d">: describe de forma declarativa qué destinos existen y cómo se conectan.</span></span></li>
+          <li><span class="bul">→</span><span><b><code>NavController</code></b><span class="d">: ejecuta ese grafo. Navegar sustituye a lanzar un Intent explícito y llamar a <code>startActivity</code>.</span></span></li>
+          <li><span class="bul">→</span><span><b>Argumentos tipados</b><span class="d">: el equivalente a los extras de un Intent, pero sin depender de claves de texto.</span></span></li>
+        </ul>
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Navegación</span>
+          </div>
+          <div class="term-body"><span class="c">// navegar al destino "detalle"</span>
+navController.navigate(
+    R.id.detalleFragment,
+    bundleOf(<span class="a">"idElemento"</span> to 42)
+)<span class="cursor"></span></div>
+        </div>
+      </div>
+      <p class="foot-note">Adelanto: el Navigation Component se trabajará en profundidad en la unidad 3, con su grafo visual y <code>NavHost</code>. De momento basta con la idea: una Activity, varios destinos.</p>
     </div>
   </section>
 
@@ -1020,53 +1060,11 @@ startActivity(intent)</div>
     <div class="kicker">03 · Ciclo de vida de la Activity</div>
     <h2 class="title">Diagrama de <em>transición de estados</em></h2>
     <div class="content" style="justify-content:center;">
-      <div class="svg-card">
-        <svg viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead5" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
-              <path d="M0,0 L10,4 L0,8 Z" fill="var(--text-faint)"/>
-            </marker>
-            <marker id="arrowhead5a" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
-              <path d="M0,0 L10,4 L0,8 Z" fill="var(--accent)"/>
-            </marker>
-          </defs>
-
-          <rect class="box" x="250" y="10" width="140" height="44" rx="8"/><text x="320" y="37" text-anchor="middle" class="lbl-strong">onCreate</text>
-          <path class="arrow" d="M320,54 V88" marker-end="url(#arrowhead5)"/>
-
-          <rect class="box" x="250" y="90" width="140" height="44" rx="8"/><text x="320" y="117" text-anchor="middle" class="lbl-strong">onStart</text>
-          <path class="arrow-accent" d="M320,134 V168" marker-end="url(#arrowhead5a)"/>
-
-          <rect class="box-accent" x="250" y="170" width="140" height="44" rx="8"/><text x="320" y="197" text-anchor="middle" class="lbl-strong">onResume</text>
-          <path class="arrow" d="M320,214 V248" marker-end="url(#arrowhead5)"/>
-
-          <rect class="box" x="250" y="250" width="140" height="44" rx="8"/><text x="320" y="277" text-anchor="middle" class="lbl-strong">onPause</text>
-          <path class="arrow" d="M320,294 V318" marker-end="url(#arrowhead5)"/>
-
-          <rect class="box" x="250" y="320" width="0" height="0"/>
-
-          <!-- rama: onPause vuelve directamente a onResume -->
-          <path class="edge" d="M250,272 C170,272 170,192 246,192" marker-end="url(#arrowhead5)"/>
-          <text x="120" y="238" text-anchor="middle" class="lane-label">vuelve a primer plano</text>
-
-          <!-- rama: onStop -->
-          <rect class="box" x="470" y="250" width="120" height="44" rx="8"/><text x="530" y="277" text-anchor="middle" class="lbl-strong">onStop</text>
-          <path class="edge" d="M390,272 H466" marker-end="url(#arrowhead5)"/>
-
-          <!-- onStop -> onRestart -> onStart -->
-          <path class="edge-a" d="M470,262 C420,262 420,110 394,102" marker-end="url(#arrowhead5a)"/>
-          <text x="450" y="170" text-anchor="middle" class="lane-label" transform="rotate(-90 450 170)">onRestart</text>
-
-          <!-- onStop -> onDestroy -->
-          <path class="arrow" d="M530,294 V318" marker-end="url(#arrowhead5)"/>
-          <rect class="box" x="470" y="320" width="120" height="0"/>
-          <rect class="box" x="470" y="318" width="120" height="0"/>
-        </svg>
-      </div>
-      <div class="grid cols-2" style="margin-top:16px;">
+      <div class="grid cols-2">
         <div class="card"><div class="num">onStop →</div><h3 style="font-size:20px;">onRestart → onStart</h3><p>El usuario vuelve a la app tras haberla dejado del todo en segundo plano.</p></div>
         <div class="card"><div class="num">onStop →</div><h3 style="font-size:20px;">onDestroy</h3><p>El sistema la mata definitivamente por falta de memoria o cierre completo.</p></div>
       </div>
+      <p class="foot-note">Diagrama completo del ciclo de estados: <a href="/tema-2/c-ciclo-vida-activity#diagrama-de-transición-de-estados" target="_blank" rel="noreferrer">apuntes del tema 2 · apartado C</a>.</p>
     </div>
   </section>
 
@@ -1217,7 +1215,7 @@ startActivity(intent)</div>
     <h2 class="title">De la <em>teoría</em> a la práctica</h2>
     <div class="content">
       <ul class="list">
-        <li><span class="bul exnum">A2.1</span><span><b>Análisis de una app de código abierto</b><span class="d"> — Jetnews, dentro de <code>android/compose-samples</code>: Activities, componentes, Manifest y estructura de paquetes.</span></span></li>
+        <li><span class="bul exnum">A2.1</span><span><b>Análisis de una app de código abierto</b><span class="d"> — Jetnews, dentro de <code>android/compose-samples</code>: Activities, destinos de navegación, componentes, Manifest y estructura de paquetes.</span></span></li>
         <li><span class="bul exnum">A2.2</span><span><b>Modificación funcional</b><span class="d"> de esa misma app: un cambio pequeño pero visible, documentado.</span></span></li>
         <li><span class="bul exnum">A2.3</span><span><b>Experimento de ciclo de vida</b><span class="d">: trazas de Log.d en todos los callbacks, Logcat y <code>onSaveInstanceState</code>.</span></span></li>
         <li><span class="bul exnum">A2.4</span><span><b>Hito de proyecto</b><span class="d">: esqueleto del Proyecto A, con Git desde el primer commit.</span></span></li>

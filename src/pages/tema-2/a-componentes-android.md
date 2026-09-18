@@ -16,7 +16,7 @@ Android define cuatro tipos de componentes. Cualquier aplicación está construi
 
 Representa **una pantalla** con la que el usuario interactúa. Es, con diferencia, el componente que más se usa y con el que trabajaremos primero.
 
-- Cada pantalla de la aplicación (login, listado, detalle, ajustes...) suele ser una `Activity`, aunque también es habitual que varias pantallas convivan dentro de una misma `Activity` mediante fragmentos o navegación.
+- Una aplicación puede tener varias Activities, pero el enfoque que se sigue en este curso —y el habitual hoy en día— usa una **única `Activity`** por aplicación: todas las pantallas (login, listado, detalle, ajustes...) conviven dentro de ella como destinos de navegación. Se retoma más abajo, al hablar de Intents.
 - Tiene un **ciclo de vida** propio, gestionado por el sistema: se crea, se pausa, se reanuda, se destruye. Lo veremos en detalle en la siguiente página.
 
 ```kotlin
@@ -86,8 +86,6 @@ Todo componente que una aplicación quiera usar debe **declararse** en el `Andro
             </intent-filter>
         </activity>
 
-        <activity android:name=".DetalleActivity" />
-
         <service android:name=".SincronizacionService" />
 
         <receiver android:name=".BateriaBajaReceiver" />
@@ -126,16 +124,15 @@ Indica si el componente puede ser invocado por **otras aplicaciones**. Desde And
 
 ## Intents: cómo se comunican los componentes
 
-Si los componentes son piezas independientes, hace falta un mecanismo para pasar de una a otra o para pedirle algo al sistema. Ese mecanismo es el **Intent**: un objeto que describe una intención de acción.
+Si los componentes son piezas independientes, hace falta un mecanismo para pasar de uno a otro o para pedirle algo al sistema. Ese mecanismo es el **Intent**: un objeto que describe una intención de acción.
 
 ### Intent explícito
 
-Indica **exactamente** qué componente se quiere lanzar. Es el caso típico de navegar de una pantalla a otra dentro de la misma aplicación.
+Indica **exactamente** qué componente se quiere lanzar: la clase concreta, sin ambigüedad. Es la forma de arrancar, por ejemplo, un `Service` propio o una `Activity` de otra aplicación instalada de la que se conoce el nombre.
 
 ```kotlin
-val intent = Intent(this, DetalleActivity::class.java)
-intent.putExtra("id_elemento", 42)
-startActivity(intent)
+val intent = Intent(this, MiServicioDeSincronizacion::class.java)
+startService(intent)
 ```
 
 ### Intent implícito
@@ -152,6 +149,33 @@ Con un intent implícito como este, el sistema puede ofrecer varios navegadores 
 :::tip
 Extras
 Los datos que viajan con un Intent (`putExtra`) se llaman *extras*. Solo pueden ser tipos serializables: primitivos, `String`, `Parcelable`... No se puede pasar directamente, por ejemplo, un objeto arbitrario sin prepararlo antes.
+:::
+
+:::note
+¿Y para moverse entre pantallas de mi propia app?
+Es tentador pensar que la navegación entre pantallas se resuelve lanzando un Intent explícito hacia otra `Activity`, y durante años fue la forma habitual de hacerlo. En este curso **no** se trabaja así: cada aplicación tendrá una única `Activity` y las pantallas serán destinos de navegación dentro de ella, gestionados por el **Navigation Component**, que se presenta a continuación.
+:::
+
+---
+
+## Una Activity, muchas pantallas: el Navigation Component
+
+El enfoque moderno recomendado por Google —y el que se sigue en este curso— reduce cada aplicación a **una sola `Activity`**. Lo que antes eran varias Activities (login, listado, detalle...) pasa a ser varios **destinos de navegación** (`Fragment` o pantallas Compose) dentro de esa única Activity.
+
+Esto lo gestiona el **Navigation Component**, una librería de Jetpack pensada exactamente para este problema:
+
+- Un **grafo de navegación** describe, de forma declarativa, qué destinos existen y cómo se conectan entre ellos.
+- Un **`NavController`** es el objeto que ejecuta ese grafo: pedirle que navegue a un destino sustituye a lanzar un Intent explícito y llamar a `startActivity`.
+- Los **argumentos** entre destinos (el equivalente a los *extras* de un Intent) viajan de forma tipada, sin depender de claves de texto propensas a errores.
+
+```kotlin
+// Navegar al destino "detalle", pasándole un argumento
+navController.navigate(R.id.detalleFragment, bundleOf("idElemento" to 42))
+```
+
+:::tip
+Esto es solo una primera toma de contacto
+El Navigation Component se trabajará en profundidad en la unidad 3, con su propio grafo visual, `NavHost` y paso de argumentos tipado. De momento basta con entender la idea de fondo: **una Activity, varios destinos**, y que el Intent explícito entre Activities propias deja de ser la herramienta de navegación habitual.
 :::
 
 <NextPageButton to="/tema-2/b-recursos">
