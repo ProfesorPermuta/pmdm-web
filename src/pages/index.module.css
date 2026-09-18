@@ -21,3 +21,61 @@
   align-items: center;
   justify-content: center;
 }
+
+.temasSection {
+  padding: 3rem 0 4rem;
+}
+
+.sectionTitle {
+  margin-bottom: 2rem;
+}
+
+.temasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.temaCard {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-top: 4px solid;
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  background: var(--ifm-card-background-color, var(--ifm-background-surface-color));
+}
+
+.temaCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.temaNumber {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.temaTitle {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.temaPageList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.temaPageList li {
+  margin-bottom: 0.35rem;
+}

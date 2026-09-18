@@ -1,0 +1,1148 @@
+<!doctype html>
+<title>Tema 1 · Dispositivos móviles y entorno de desarrollo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg: #0a1410;
+  --surface: #0f1d17;
+  --surface-2: #142821;
+  --border: #1e3b2f;
+  --text: #eef6f1;
+  --text-dim: #9fbcac;
+  --text-faint: #6b8a79;
+  --accent: #34d399;
+  --accent-strong: #10b981;
+  --accent-deep: #065f46;
+  --amber: #f5c76e;
+  --rose: #e88b8b;
+  --shadow: 0 20px 60px -20px rgba(0,0,0,0.6);
+}
+
+:root[data-theme="light"]{
+  --bg: #f4f8f5;
+  --surface: #ffffff;
+  --surface-2: #eaf3ec;
+  --border: #d3e5da;
+  --text: #0e1f17;
+  --text-dim: #3f5f4f;
+  --text-faint: #6f8f7c;
+  --accent: #0f9d6b;
+  --accent-strong: #0c8a5c;
+  --accent-deep: #d7f0e2;
+  --amber: #a5730a;
+  --rose: #b3423f;
+  --shadow: 0 20px 50px -25px rgba(15,60,40,0.25);
+}
+
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg: #f4f8f5;
+    --surface: #ffffff;
+    --surface-2: #eaf3ec;
+    --border: #d3e5da;
+    --text: #0e1f17;
+    --text-dim: #3f5f4f;
+    --text-faint: #6f8f7c;
+    --accent: #0f9d6b;
+    --accent-strong: #0c8a5c;
+    --accent-deep: #d7f0e2;
+    --amber: #a5730a;
+    --rose: #b3423f;
+    --shadow: 0 20px 50px -25px rgba(15,60,40,0.25);
+  }
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+.deck{
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+}
+
+.slide{
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  padding: 56px 72px 40px;
+  opacity: 0;
+}
+.slide.active{
+  display: flex;
+  opacity: 1;
+  animation: rise .5s ease both;
+}
+@keyframes rise{
+  from{ opacity:0; transform: translateY(14px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce){
+  .slide.active{ animation: none; }
+}
+
+.kicker{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.kicker::before{
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+h1.big{
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(40px, 5.4vw, 76px);
+  line-height: 1.02;
+  margin: 0 0 20px;
+  text-wrap: balance;
+  color: var(--text);
+}
+h1.big em{
+  font-style: italic;
+  color: var(--accent);
+}
+
+h2.title{
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(32px, 3.6vw, 52px);
+  line-height: 1.05;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+h2.title em{ font-style: italic; color: var(--accent); }
+
+.subtitle{
+  font-size: 18px;
+  color: var(--text-dim);
+  max-width: 60ch;
+  margin: 0 0 8px;
+}
+
+.content{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+}
+
+.two-col{
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+}
+@media (max-width: 900px){
+  .two-col{ grid-template-columns: 1fr; }
+}
+
+/* terminal / motivo recurrente (opcional: adapta term-label a tu dominio) */
+.term{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+}
+.term-bar{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.term-dot{ width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.term-dot:nth-child(1){ background: var(--rose); opacity:.7;}
+.term-dot:nth-child(2){ background: var(--amber); opacity:.7;}
+.term-dot:nth-child(3){ background: var(--accent); opacity:.7;}
+.term-label{
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+.term-body{
+  padding: 20px 22px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+.term-body .c{ color: var(--text-faint); }
+.term-body .g{ color: var(--accent); }
+.term-body .a{ color: var(--amber); }
+.term-body .rose{ color: var(--rose); }
+.term-body .prompt{ color: var(--accent-strong); font-weight: 600; }
+.cursor{
+  display:inline-block; width: 8px; height: 16px;
+  background: var(--accent);
+  margin-left: 2px;
+  animation: blink 1.1s steps(1) infinite;
+  vertical-align: -2px;
+}
+@keyframes blink{ 50%{ opacity: 0; } }
+
+/* Listas con viñeta */
+ul.list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 18px; }
+ul.list li{
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  font-size: 19px;
+  line-height: 1.45;
+}
+ul.list li .bul{
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  font-size: 16px;
+  padding-top: 3px;
+  flex-shrink: 0;
+}
+ul.list li b{ color: var(--text); }
+ul.list li span.d{ color: var(--text-dim); }
+
+/* grid de tarjetas */
+.grid{ display: grid; gap: 20px; }
+.grid.cols-3{ grid-template-columns: repeat(3, 1fr); }
+.grid.cols-2{ grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 900px){
+  .grid.cols-3, .grid.cols-2{ grid-template-columns: 1fr; }
+}
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.card .num{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: .08em;
+}
+.card h3{
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: 26px;
+  color: var(--text);
+}
+.card p{ margin: 0; color: var(--text-dim); font-size: 15px; line-height: 1.5; }
+
+/* tabla */
+table.tbl{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+table.tbl th{
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+table.tbl td{
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+}
+table.tbl td b, table.tbl td code{ color: var(--text); }
+table.tbl tr:last-child td{ border-bottom: none; }
+code{
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: .9em;
+  color: var(--accent);
+}
+
+/* tarjeta contenedora de diagramas SVG */
+.svg-card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.svg-card svg{ width: 100%; height: auto; display: block; }
+.svg-card .lbl{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  fill: var(--text-dim);
+}
+.svg-card .lbl-strong{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--text);
+}
+.svg-card .lane-label{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .04em;
+  fill: var(--text-faint);
+}
+.svg-card .edge{ stroke: var(--text-faint); stroke-width: 2; fill: none; }
+.svg-card .edge-a{ stroke: var(--accent); stroke-width: 2.5; fill: none; }
+.svg-card .edge-b{ stroke: var(--amber); stroke-width: 2.5; fill: none; }
+.svg-card .commit{ fill: var(--surface); stroke: var(--text-faint); stroke-width: 2.5; }
+.svg-card .commit-a{ fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; }
+.svg-card .commit-b{ fill: var(--surface); stroke: var(--amber); stroke-width: 2.5; }
+.svg-card .commit-m{ fill: var(--amber); stroke: var(--amber); stroke-width: 2.5; }
+.svg-card .commit-ghost{ fill: none; stroke: var(--border); stroke-width: 2; stroke-dasharray: 3 4; }
+.svg-card .box{ fill: var(--surface-2); stroke: var(--border); stroke-width: 1.5; rx: 10; }
+.svg-card .box-accent{ fill: color-mix(in oklab, var(--accent) 12%, var(--surface-2)); stroke: var(--accent); stroke-width: 1.5; rx: 10; }
+.svg-card .arrow{ stroke: var(--text-faint); stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+.svg-card .arrow-accent{ stroke: var(--accent); stroke-width: 2; fill: none; marker-end: url(#arrowhead-accent); }
+
+/* hueco para imagen pendiente de añadir a mano */
+.img-placeholder{
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 180px;
+  color: var(--text-faint);
+  text-align: center;
+}
+.img-placeholder .ph-icon{
+  width: 36px; height: 36px;
+  color: var(--text-faint);
+}
+.img-placeholder .ph-file{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+}
+.img-placeholder .ph-desc{
+  font-size: 13px;
+  max-width: 42ch;
+  line-height: 1.4;
+}
+
+/* badges */
+.badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+  width: fit-content;
+}
+.badge.warn{ color: var(--amber); background: color-mix(in oklab, var(--amber) 10%, transparent); }
+.badge.err{ color: var(--rose); background: color-mix(in oklab, var(--rose) 10%, transparent); }
+
+.foot-note{
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--text-faint);
+  border-left: 2px solid var(--accent-deep);
+  padding-left: 14px;
+}
+
+/* pie de página / progreso */
+.deck-foot{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-faint);
+  letter-spacing: .04em;
+}
+.progress{
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  margin: 0 24px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-bar{
+  height: 100%;
+  background: var(--accent-strong);
+  transition: width .35s ease;
+}
+
+.nav-btn{
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: color .15s, border-color .15s, transform .15s;
+  opacity: .55;
+}
+.nav-btn:hover{ opacity: 1; color: var(--accent); border-color: var(--accent); }
+.nav-btn.prev{ left: 18px; }
+.nav-btn.next{ right: 18px; }
+.nav-btn svg{ width: 18px; height: 18px; }
+
+.exnum{
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+}
+
+::selection{ background: color-mix(in oklab, var(--accent) 35%, transparent); }
+
+a{ color: var(--accent); }
+a:hover{ color: var(--accent-strong); }
+</style>
+
+<div class="deck" id="deck">
+
+  <!-- 1. PORTADA -->
+  <section class="slide active">
+    <div class="content" style="justify-content:center; align-items:flex-start;">
+      <div class="kicker">PMDM · Tema 1</div>
+      <h1 class="big">Dispositivos <em>móviles</em> y entorno de desarrollo</h1>
+      <p class="subtitle">Evolución del hardware, las tres familias de tecnologías de desarrollo, y la puesta en marcha de Android Studio.</p>
+    </div>
+  </section>
+
+  <!-- 2. MAPA DEL TEMA -->
+  <section class="slide">
+    <div class="kicker">Mapa del tema</div>
+    <h2 class="title">Seis paradas antes de escribir la primera línea de <em>Kotlin</em></h2>
+    <div class="content">
+      <div class="grid cols-3">
+        <div class="card"><div class="num">01</div><h3>Dispositivos móviles</h3><p>Evolución, tipos y limitaciones de hardware.</p></div>
+        <div class="card"><div class="num">02</div><h3>Tecnologías</h3><p>Nativo, multiplataforma y web/híbrido.</p></div>
+        <div class="card"><div class="num">03</div><h3>Android Studio</h3><p>IDE, SDK, Gradle y ADB.</p></div>
+        <div class="card"><div class="num">04</div><h3>Emuladores</h3><p>AVD, configuración, perfil, dp/sp.</p></div>
+        <div class="card"><div class="num">05</div><h3>Actividades</h3><p>Las cuatro entregas del tema.</p></div>
+        <div class="card"><div class="num">06</div><h3>Proyecto A</h3><p>Primer hito del proyecto continuo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. EVOLUCIÓN - INTRO -->
+  <section class="slide">
+    <div class="kicker">01 · Dispositivos móviles</div>
+    <h2 class="title">Qué es un <em>dispositivo móvil</em></h2>
+    <div class="content">
+      <p class="subtitle" style="font-size:22px; max-width:75ch;">Un equipo informático de tamaño reducido, alimentado por <b style="color:var(--text)">batería</b>, con <b style="color:var(--text)">conectividad inalámbrica</b> y pensado para usarse <b style="color:var(--text)">en movimiento</b>.</p>
+      <p class="foot-note">Cada una de estas cuatro características impone una restricción real al software que vamos a escribir durante el curso.</p>
+    </div>
+  </section>
+
+  <!-- 4. EVOLUCIÓN - TIMELINE -->
+  <section class="slide">
+    <div class="kicker">01 · Dispositivos móviles</div>
+    <h2 class="title">Cuatro etapas de <em>evolución</em></h2>
+    <div class="content">
+      <div class="svg-card">
+        <svg viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--text-faint)"/>
+            </marker>
+          </defs>
+          <path class="edge" d="M60,110 H840"/>
+          <circle class="commit" cx="100" cy="110" r="10"/>
+          <circle class="commit" cx="330" cy="110" r="10"/>
+          <circle class="commit-a" cx="560" cy="110" r="10"/>
+          <circle class="commit-a" cx="800" cy="110" r="10"/>
+          <text x="100" y="80" text-anchor="middle" class="lbl-strong">1990–2000</text>
+          <text x="100" y="145" text-anchor="middle" class="lbl">Telefonía básica</text>
+          <text x="100" y="165" text-anchor="middle" class="lbl">Voz y SMS</text>
+          <text x="330" y="80" text-anchor="middle" class="lbl-strong">2000–2007</text>
+          <text x="330" y="145" text-anchor="middle" class="lbl">Feature phones</text>
+          <text x="330" y="165" text-anchor="middle" class="lbl">Java ME, cámara</text>
+          <text x="560" y="80" text-anchor="middle" class="lbl-strong">2007–2015</text>
+          <text x="560" y="145" text-anchor="middle" class="lbl">Smartphones</text>
+          <text x="560" y="165" text-anchor="middle" class="lbl">Táctil, app stores</text>
+          <text x="800" y="80" text-anchor="middle" class="lbl-strong">2015–hoy</text>
+          <text x="800" y="145" text-anchor="middle" class="lbl">Ecosistema actual</text>
+          <text x="800" y="165" text-anchor="middle" class="lbl">IA, wearables, plegables</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. TELEFONÍA BÁSICA -->
+  <section class="slide">
+    <div class="kicker">01 · Evolución</div>
+    <h2 class="title">Telefonía móvil básica <em>(1990–2000)</em></h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Tamaño:</b> <span class="d">de maleta portátil a bolsillo en una década.</span></span></li>
+        <li><span class="bul">→</span><span><b>Pantalla:</b> <span class="d">monocroma, blanco y negro o verde suave.</span></span></li>
+        <li><span class="bul">→</span><span><b>Funciones:</b> <span class="d">llamar, SMS; con el tiempo, calculadora, alarma, snake.</span></span></li>
+        <li><span class="bul">→</span><span><b>Icono:</b> <span class="d">Nokia 3310 (2000) — duradero, autónomo, indestructible.</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6. FEATURE PHONES -->
+  <section class="slide">
+    <div class="kicker">01 · Evolución</div>
+    <h2 class="title">Feature phones <em>(2000–2007)</em></h2>
+    <div class="content two-col">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Del teléfono a la herramienta multimedia:</b> <span class="d">ya no es solo llamar y mandar SMS.</span></span></li>
+        <li><span class="bul">→</span><span><b>Pantalla a color</b> <span class="d">+ cámara: fotos y vídeo.</span></span></li>
+        <li><span class="bul">→</span><span><b>Reproducción MP3</b> <span class="d">y aparición de tarjetas de memoria externas.</span></span></li>
+        <li><span class="bul">→</span><span><b>Referentes:</b> <span class="d">Blackberry (teclado completo, mensajería en red) y Nokia 5200 (MP3, flip deslizante).</span></span></li>
+      </ul>
+      <div class="grid cols-2">
+        <img src="/img/blackberry.png" alt="Teléfono BlackBerry con teclado físico completo" style="width:100%; border-radius:12px; box-shadow:var(--shadow);">
+        <img src="/img/nokia_5200.png" alt="Nokia 5200 con pantalla flip deslizante" style="width:100%; border-radius:12px; box-shadow:var(--shadow);">
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. SMARTPHONES: EL SALTO -->
+  <section class="slide">
+    <div class="kicker">01 · Evolución</div>
+    <h2 class="title">2007: el salto a <em>smartphones</em></h2>
+    <div class="content two-col">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>iPhone:</b> <span class="d">pantalla táctil capacitiva ocupando casi el 100% de la superficie, sin teclado físico.</span></span></li>
+        <li><span class="bul">→</span><span><b>Tiendas de aplicaciones</b> <span class="d">+ sensores (GPS, acelerómetro).</span></span></li>
+        <li><span class="bul">→</span><span><b>El salto clave para este módulo:</b> <span class="d">el móvil se convierte en una plataforma abierta a desarrolladores externos.</span></span></li>
+      </ul>
+      <div class="svg-card" style="padding:0; overflow:hidden;">
+        <img src="/img/iphone-2007-keynote.jpg" alt="Primera presentación pública del iPhone en Macworld 2007" style="width:100%; height:100%; object-fit:cover; display:block;">
+      </div>
+    </div>
+    <p class="foot-note">Antes, programar para un móvil era una excepción; después, un sector completo.</p>
+  </section>
+
+  <!-- 8. ANDROID VS IOS -->
+  <section class="slide">
+    <div class="kicker">01 · Evolución</div>
+    <h2 class="title">Android como <em>alternativa</em> abierta</h2>
+    <div class="content">
+      <div class="grid cols-2">
+        <div class="card"><div class="num">iOS</div><h3>Ecosistema cerrado</h3><p>Apple controla hardware y software; alto rendimiento y consistencia.</p></div>
+        <div class="card"><div class="num">Android</div><h3>Plataforma abierta</h3><p>Elegida por fabricantes para entrar al mercado smartphone; hoy a la par en rendimiento.</p></div>
+      </div>
+      <p class="foot-note">La gran demanda de desarrolladores Android del mercado es la razón por la que este curso se centra en Android nativo.</p>
+    </div>
+  </section>
+
+  <!-- 9. TIPOS DE DISPOSITIVOS -->
+  <section class="slide">
+    <div class="kicker">01 · Dispositivos móviles</div>
+    <h2 class="title">No todo es un <em>teléfono</em></h2>
+    <div class="content">
+      <div class="grid cols-3">
+        <div class="card"><h3>Smartphones</h3><p>El caso mayoritario, el que usaremos en el proyecto.</p></div>
+        <div class="card"><h3>Tablets</h3><p>Misma plataforma, pantalla mucho mayor → diseños adaptables.</p></div>
+        <div class="card"><h3>Wearables</h3><p>Pantalla mínima, interacción de segundos, dependen de un teléfono cercano.</p></div>
+        <div class="card"><h3>Plegables</h3><p>La pantalla cambia de tamaño durante la ejecución.</p></div>
+        <div class="card"><h3>Embarcados</h3><p>TV, automoción: sin táctil, control por mando o voz.</p></div>
+      </div>
+      <p class="foot-note">Dispositivos muy distintos entre sí → apps responsive. El acceso a funcionalidades depende también de la versión de API.</p>
+    </div>
+  </section>
+
+  <!-- 10. HARDWARE INTRO -->
+  <section class="slide">
+    <div class="kicker">01 · Dispositivos móviles</div>
+    <h2 class="title">Programar bajo <em>restricciones</em></h2>
+    <div class="content" style="justify-content:center;">
+      <p class="subtitle" style="font-size:22px; max-width:75ch;">Programar para móvil no es programar para escritorio con una pantalla más pequeña: es programar bajo restricciones que en un PC no existen.</p>
+    </div>
+  </section>
+
+  <!-- 11. PANTALLA -->
+  <section class="slide">
+    <div class="kicker">01 · Hardware y limitaciones</div>
+    <h2 class="title">Pantalla</h2>
+    <div class="content two-col">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Tamaño</b> <span class="d">reducido y muy variable entre modelos.</span></span></li>
+        <li><span class="bul">→</span><span><b>Densidad de píxeles</b> <span class="d">distinta: el mismo diseño ocupa distinto espacio físico.</span></span></li>
+        <li><span class="bul">→</span><span><b>Dedo ≈ 9 mm:</b> <span class="d">puntero mucho más impreciso que un ratón.</span></span></li>
+        <li><span class="bul">→</span><span><b>Uso al aire libre:</b> <span class="d">reflejos y brillo variable.</span></span></li>
+      </ul>
+      <div class="svg-card">
+        <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+          <rect class="box" x="20" y="20" width="90" height="180" rx="10"/>
+          <rect class="box-accent" x="150" y="20" width="90" height="180" rx="10"/>
+          <text x="65" y="115" text-anchor="middle" class="lbl">1920×1080</text>
+          <text x="195" y="115" text-anchor="middle" class="lbl-strong">960×540</text>
+          <text x="65" y="210" text-anchor="middle" class="lbl">misma densidad física</text>
+        </svg>
+      </div>
+    </div>
+    <p class="foot-note">Consecuencia: nunca se posicionan elementos en píxeles absolutos; objetivos táctiles necesitan mínimo 48 dp.</p>
+  </section>
+
+  <!-- 12. PROCESADOR -->
+  <section class="slide">
+    <div class="kicker">01 · Hardware y limitaciones</div>
+    <h2 class="title">Procesador</h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Arquitectura ARM,</b> <span class="d">optimizada para consumo, no para potencia bruta.</span></span></li>
+        <li><span class="bul">→</span><span><b>Throttling térmico:</b> <span class="d">si el dispositivo se calienta, el sistema reduce la frecuencia del procesador.</span></span></li>
+      </ul>
+      <p class="foot-note">Un cálculo intensivo sostenido acaba siendo más lento, no más rápido. Consecuencia: el trabajo pesado va fuera del hilo principal y, cuando es posible, se delega al servidor.</p>
+    </div>
+  </section>
+
+  <!-- 13. MEMORIA -->
+  <section class="slide">
+    <div class="kicker">01 · Hardware y limitaciones</div>
+    <h2 class="title">Memoria</h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>RAM limitada</b> <span class="d">y compartida entre todas las apps abiertas.</span></span></li>
+        <li><span class="bul">→</span><span><b>El sistema puede matar tu app</b> <span class="d">en segundo plano para liberar memoria, sin avisar.</span></span></li>
+      </ul>
+      <p class="foot-note">Esta es la razón de ser del ciclo de vida que veremos en el tema 2: una app móvil debe poder morir y resucitar sin que el usuario pierda datos.</p>
+    </div>
+  </section>
+
+  <!-- 14. BATERÍA -->
+  <section class="slide">
+    <div class="kicker">01 · Hardware y limitaciones</div>
+    <h2 class="title">Batería</h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>El recurso más escaso:</b> <span class="d">pantalla, CPU, GPS, wifi, bluetooth, todo consume.</span></span></li>
+        <li><span class="bul">→</span><span><b>Doze y restricciones de background:</b> <span class="d">el sistema penaliza el consumo en segundo plano.</span></span></li>
+      </ul>
+      <p class="foot-note">Consecuencia: no se hacen sondeos periódicos al servidor "por si acaso"; se usan notificaciones push y trabajo diferido.</p>
+    </div>
+  </section>
+
+  <!-- 15. ALMACENAMIENTO -->
+  <section class="slide">
+    <div class="kicker">01 · Hardware y limitaciones</div>
+    <h2 class="title">Almacenamiento</h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Espacio limitado</b> <span class="d">y compartido con fotos, vídeos y otras apps.</span></span></li>
+        <li><span class="bul">→</span><span><b>El usuario</b> <span class="d">puede quedarse sin espacio en cualquier momento.</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 16. CONECTIVIDAD -->
+  <section class="slide">
+    <div class="kicker">01 · Hardware y limitaciones</div>
+    <h2 class="title">Conectividad</h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Intermitente por definición:</b> <span class="d">túneles, ascensores, cambio de wifi a datos móviles.</span></span></li>
+        <li><span class="bul">→</span><span><b>Ancho de banda y latencia</b> <span class="d">variables; los datos móviles pueden tener coste.</span></span></li>
+      </ul>
+      <p class="foot-note">La red no es fiable. Toda operación de red necesita gestión de error y, preferiblemente, caché local (unidad 4).</p>
+    </div>
+  </section>
+
+  <!-- 17. SENSORES -->
+  <section class="slide">
+    <div class="kicker">01 · Hardware y limitaciones</div>
+    <h2 class="title">Sensores</h2>
+    <div class="content">
+      <p class="subtitle" style="font-size:20px; max-width:75ch;">A diferencia de un PC, un móvil sabe dónde está, cómo está orientado y qué le rodea.</p>
+      <div class="grid cols-3">
+        <div class="card"><p>Acelerómetro · Giroscopio · Magnetómetro</p></div>
+        <div class="card"><p>GPS · Luz ambiental · Proximidad</p></div>
+        <div class="card"><p>Cámara · Micrófono · NFC · Huella</p></div>
+      </div>
+      <p class="foot-note">Hablaremos de estos sensores en la unidad 6.</p>
+    </div>
+  </section>
+
+  <!-- 18. RESUMEN ESCRITORIO VS MÓVIL -->
+  <section class="slide">
+    <div class="kicker">01 · Dispositivos móviles</div>
+    <h2 class="title">Resumen: <em>escritorio</em> frente a <em>móvil</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Aspecto</th><th>Escritorio</th><th>Móvil</th></tr>
+        <tr><td><b>Energía</b></td><td>Ilimitada (enchufe)</td><td>Batería, recurso crítico</td></tr>
+        <tr><td><b>Memoria</b></td><td>Abundante</td><td>Limitada; el SO puede matar la app</td></tr>
+        <tr><td><b>Conectividad</b></td><td>Estable</td><td>Intermitente y con coste</td></tr>
+        <tr><td><b>Pantalla</b></td><td>Grande, fija</td><td>Pequeña, muy variable</td></tr>
+        <tr><td><b>Entrada</b></td><td>Teclado y ratón</td><td>Dedo (impreciso)</td></tr>
+        <tr><td><b>Ciclo de vida</b></td><td>Vive hasta que se cierra</td><td>El sistema la suspende y destruye</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 19. TECNOLOGÍAS INTRO -->
+  <section class="slide">
+    <div class="kicker">02 · Tecnologías de desarrollo</div>
+    <h2 class="title">Cómo construir tu <em>aplicación móvil</em></h2>
+    <div class="content">
+      <p class="subtitle" style="font-size:20px; max-width:75ch;">No es una elección técnica sin consecuencias: afecta a lenguajes, herramientas, rendimiento y al coste de mantener la app en cinco años.</p>
+      <p class="foot-note">Cambiar de tecnología a medio camino es un proceso costoso: puede durar meses o años. La IA reduce parte de esa complejidad, pero trae consigo mantenimiento de código ajeno y más tiempo de testing.</p>
+    </div>
+  </section>
+
+  <!-- 20. NATIVO -->
+  <section class="slide">
+    <div class="kicker">02 · Tecnologías de desarrollo</div>
+    <h2 class="title">1 · Desarrollo <em>nativo</em>: el control total</h2>
+    <div class="content two-col">
+      <div>
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Android:</b> <span class="d">Kotlin (oficial desde 2019) o Java, en Android Studio.</span></span></li>
+          <li><span class="bul">→</span><span><b>iOS:</b> <span class="d">Swift, en Xcode (solo macOS).</span></span></li>
+        </ul>
+        <div class="grid cols-2" style="margin-top:18px;">
+          <div><span class="badge">✓ máximo rendimiento</span></div>
+          <div><span class="badge warn">✗ dos proyectos completos</span></div>
+        </div>
+      </div>
+      <div class="svg-card">
+        <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="arrowhead-accent" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="var(--accent)"/></marker></defs>
+          <rect class="box-accent" x="20" y="20" width="100" height="50" rx="8"/>
+          <text x="70" y="50" text-anchor="middle" class="lbl-strong">Tu código</text>
+          <path class="arrow-accent" d="M120,45 H190"/>
+          <rect class="box" x="195" y="20" width="70" height="50" rx="8"/>
+          <text x="230" y="50" text-anchor="middle" class="lbl">SO</text>
+          <text x="140" y="110" text-anchor="middle" class="lbl">sin intermediarios</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21. MULTIPLATAFORMA TABLA -->
+  <section class="slide">
+    <div class="kicker">02 · Tecnologías de desarrollo</div>
+    <h2 class="title">2 · Desarrollo <em>multiplataforma</em></h2>
+    <div class="content">
+      <p class="subtitle">Escribir una sola vez, ejecutar en muchos sitios. Cada framework lo intenta de una forma distinta.</p>
+      <table class="tbl">
+        <tr><th>Tecnología</th><th>Lenguaje</th><th>Estrategia</th></tr>
+        <tr><td><b>Flutter</b></td><td>Dart</td><td>Dibuja todo desde cero con Skia (motor propio)</td></tr>
+        <tr><td><b>React Native</b></td><td>JS / TS</td><td>Traduce componentes a controles nativos reales</td></tr>
+        <tr><td><b>.NET MAUI</b></td><td>C#</td><td>Abstracción: MAUI traduce a cada plataforma</td></tr>
+        <tr><td><b>Kotlin Multiplatform</b></td><td>Kotlin</td><td>Comparte lógica; interfaz nativa por plataforma</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 22. MULTIPLATAFORMA PROS/CONTRAS -->
+  <section class="slide">
+    <div class="kicker">02 · Tecnologías de desarrollo</div>
+    <h2 class="title">Multiplataforma: <em>el precio</em> del compromiso</h2>
+    <div class="content two-col">
+      <div>
+        <span class="badge">✓ 50-70% más barato de mantener</span>
+        <p class="foot-note" style="margin-top:14px;">Un equipo web que sabe React puede ser productivo con React Native sin aprender dos SDKs nativos.</p>
+      </div>
+      <ul class="list">
+        <li><span class="bul">✗</span><span><b>Capa intermedia:</b> <span class="d">novedades del SO llegan semanas o meses después.</span></span></li>
+        <li><span class="bul">✗</span><span><b>Grietas en la abstracción:</b> <span class="d">a veces hay que escribir código nativo igualmente.</span></span></li>
+        <li><span class="bul">✗</span><span><b>Tamaño mayor:</b> <span class="d">un "Hello world" en Flutter pesa el doble que en nativo.</span></span></li>
+        <li><span class="bul">✗</span><span><b>Rendimiento:</b> <span class="d">nunca es máximo, aunque suele ser bueno.</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 23. WEB/HÍBRIDO -->
+  <section class="slide">
+    <div class="kicker">02 · Tecnologías de desarrollo</div>
+    <h2 class="title">3 · Web e <em>híbridas</em>: la puerta fácil</h2>
+    <div class="content">
+      <div class="grid cols-2">
+        <div class="card"><h3>PWA</h3><p>Web instalable desde el navegador. Sin tienda, sin revisión, se actualiza sola.</p></div>
+        <div class="card"><h3>Híbridas</h3><p>Cordova, Ionic, Capacitor: web dentro de un contenedor nativo con acceso a algunas APIs del dispositivo.</p></div>
+      </div>
+      <p class="foot-note">Reutilización inmediata del código web, pero rendimiento y acceso al hardware son los más limitados de las tres familias.</p>
+    </div>
+  </section>
+
+  <!-- 24. COMPARATIVA -->
+  <section class="slide">
+    <div class="kicker">02 · Tecnologías de desarrollo</div>
+    <h2 class="title">Comparativa: <em>qué elegir</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Criterio</th><th>Nativo</th><th>Multiplataforma</th><th>Web / Híbrido</th></tr>
+        <tr><td><b>Rendimiento</b></td><td>Máximo</td><td>Alto</td><td>Medio-bajo</td></tr>
+        <tr><td><b>Hardware</b></td><td>Total</td><td>Alto (a veces plugin)</td><td>Limitado</td></tr>
+        <tr><td><b>Coste multiplataforma</b></td><td>Alto</td><td>Bajo</td><td>Muy bajo</td></tr>
+        <tr><td><b>Novedades del SO</b></td><td>Inmediatas</td><td>Con retraso</td><td>Mucho retraso</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 25. PREGUNTAS PARA ELEGIR -->
+  <section class="slide">
+    <div class="kicker">02 · Tecnologías de desarrollo</div>
+    <h2 class="title">Preguntas que <em>importan</em></h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">1</span><span><b>¿Cuántas plataformas</b> <span class="d">hay que cubrir?</span></span></li>
+        <li><span class="bul">2</span><span><b>¿Qué exigencia de rendimiento</b> <span class="d">tiene la app?</span></span></li>
+        <li><span class="bul">3</span><span><b>¿Cuánto hardware específico</b> <span class="d">usa?</span></span></li>
+        <li><span class="bul">4</span><span><b>¿Qué sabe hacer el equipo?</b></span></li>
+        <li><span class="bul">5</span><span><b>¿Qué ciclo de vida</b> <span class="d">tiene el producto?</span></span></li>
+        <li><span class="bul">6</span><span><b>¿Cuál es el presupuesto real?</b></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 26. QUÉ USAMOS EN EL CURSO -->
+  <section class="slide">
+    <div class="kicker">02 · Tecnologías de desarrollo</div>
+    <h2 class="title">Qué usaremos: <em>Android nativo + Kotlin</em></h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Sin capas intermedias</b> <span class="d">que oculten sensores, permisos, ciclo de vida y servicios.</span></span></li>
+        <li><span class="bul">→</span><span><b>Kotlin</b> <span class="d">es la recomendación oficial de Google desde 2019, sintaxis cercana a Java.</span></span></li>
+        <li><span class="bul">→</span><span><b>Herramientas gratuitas</b> <span class="d">en Windows, macOS y Linux.</span></span></li>
+        <li><span class="bul">→</span><span><b>Base sólida</b> <span class="d">para aprender después cualquier framework multiplataforma.</span></span></li>
+      </ul>
+      <p class="foot-note">No es una recomendación universal: saber argumentar tu elección forma parte del criterio de evaluación 1b.</p>
+    </div>
+  </section>
+
+  <!-- 27. REQUISITOS ANDROID STUDIO -->
+  <section class="slide">
+    <div class="kicker">03 · El entorno</div>
+    <h2 class="title">Android Studio: <em>requisitos previos</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Recurso</th><th>Mínimo</th><th>Recomendado</th></tr>
+        <tr><td><b>RAM</b></td><td>8 GB</td><td>16 GB o más</td></tr>
+        <tr><td><b>Disco</b></td><td>12 GB libres</td><td>30 GB</td></tr>
+        <tr><td><b>Procesador</b></td><td>x86_64 con virtualización</td><td>Virtualización activada en BIOS</td></tr>
+      </table>
+      <p class="foot-note">El emulador necesita virtualización por hardware (Intel VT-x, AMD-V o SVM Mode). Si está desactivada, el emulador no arranca o va inutilizablemente lento.</p>
+    </div>
+  </section>
+
+  <!-- 28. PIEZAS DEL ENTORNO -->
+  <section class="slide">
+    <div class="kicker">03 · El entorno</div>
+    <h2 class="title">Las piezas del <em>entorno</em></h2>
+    <div class="content two-col">
+      <div class="term">
+        <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><div class="term-label">terminal</div></div>
+        <div class="term-body"><span class="prompt">$</span> adb devices              <span class="c"># Lista dispositivos conectados</span>
+<span class="prompt">$</span> adb install app.apk      <span class="c"># Instala una aplicación</span>
+<span class="prompt">$</span> adb logcat               <span class="c"># Muestra el log del sistema</span>
+<span class="prompt">$</span> adb shell<span class="cursor"></span></div>
+      </div>
+      <div class="svg-card" style="padding:0; overflow:hidden; max-height:60vh;">
+        <img src="/img/android-studio-sdk-manager.png" alt="Android SDK Manager con las pestañas SDK Platforms, SDK Tools y SDK Update Sites" style="width:100%; height:100%; object-fit:contain; display:block;">
+      </div>
+    </div>
+  </section>
+
+  <!-- 29. ESTRUCTURA DE PROYECTO -->
+  <section class="slide">
+    <div class="kicker">03 · El entorno</div>
+    <h2 class="title">Estructura de un <em>proyecto</em></h2>
+    <div class="content two-col">
+      <div class="term">
+        <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><div class="term-label">MiProyecto/</div></div>
+        <div class="term-body">app/
+  build.gradle.kts        <span class="c"># config. del módulo</span>
+  src/main/
+    AndroidManifest.xml   <span class="c"># declaración app</span>
+    java/com/ejemplo/     <span class="g"># código Kotlin</span>
+    res/
+      drawable/ layout/
+      values/  mipmap/
+build.gradle.kts          <span class="c"># config. proyecto</span>
+settings.gradle.kts</div>
+      </div>
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Código y recursos separados:</b> <span class="d">textos, colores e imágenes van en res/.</span></span></li>
+        <li><span class="bul">→</span><span><b>El Manifest</b> <span class="d">es la tarjeta de identidad: pantallas, permisos, arranque (tema 2).</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 30. minSdk/targetSdk/compileSdk -->
+  <section class="slide">
+    <div class="kicker">03 · El entorno</div>
+    <h2 class="title"><em>minSdk</em>, <em>targetSdk</em> y <em>compileSdk</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Propiedad</th><th>Qué significa</th></tr>
+        <tr><td><code>compileSdk</code></td><td>APIs disponibles al escribir código; siempre la más reciente estable</td></tr>
+        <tr><td><code>minSdk</code></td><td>Versión mínima de Android donde se instala; bajarla amplía el público</td></tr>
+        <tr><td><code>targetSdk</code></td><td>Versión para la que la app declara estar preparada</td></tr>
+      </table>
+      <p class="foot-note">Android Studio muestra el porcentaje de dispositivos cubierto por cada nivel de API. minSdk 24 (Android 7.0) cubre casi todo el parque actual.</p>
+    </div>
+  </section>
+
+  <!-- 31. FRAGMENTACIÓN -->
+  <section class="slide">
+    <div class="kicker">03 · El entorno</div>
+    <h2 class="title">Fragmentación y <em>compatibilidad</em></h2>
+    <div class="content">
+      <p class="subtitle">Coexistencia de muchas versiones de Android y modelos de dispositivo en el mercado a la vez.</p>
+      <div class="term">
+        <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><div class="term-label">Kotlin</div></div>
+        <div class="term-body"><span class="c">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.TIRAMISU) {
+    <span class="c">// Código solo para Android 13+</span>
+} <span class="c">else</span> {
+    <span class="c">// Alternativa para versiones anteriores</span>
+}</div>
+      </div>
+      <p class="foot-note">Las bibliotecas AndroidX (Jetpack) existen para esto: una API única que resuelve internamente las diferencias entre versiones.</p>
+    </div>
+  </section>
+
+  <!-- 32. QUÉ ES UN AVD -->
+  <section class="slide">
+    <div class="kicker">04 · Emuladores y perfiles</div>
+    <h2 class="title">Qué es un <em>AVD</em></h2>
+    <div class="content">
+      <div class="grid cols-3">
+        <div class="card"><div class="num">1</div><h3>Perfil de hardware</h3><p>Tamaño de pantalla, densidad, RAM, sensores, cámara.</p></div>
+        <div class="card"><div class="num">2</div><h3>Imagen del sistema</h3><p>Versión de Android (API 30, 34, 35…) y arquitectura.</p></div>
+        <div class="card"><div class="num">3</div><h3>Configuración</h3><p>Orientación, memoria, aceleración gráfica, almacenamiento.</p></div>
+      </div>
+      <div class="svg-card" style="padding:0; overflow:hidden; margin-top:20px;">
+        <img src="/img/android-studio-device-manager.png" alt="Asistente Create Device del Device Manager de Android Studio, seleccionando el perfil de hardware" style="width:100%; height:100%; object-fit:contain; display:block;">
+      </div>
+      <p class="foot-note">Device Manager → Create Device. Las imágenes con Google Play incluyen servicios de Google; x86_64 es mucho más rápido que ARM en PC.</p>
+    </div>
+  </section>
+
+  <!-- 33. CONFIGURACIÓN VS PERFIL -->
+  <section class="slide">
+    <div class="kicker">04 · Emuladores y perfiles</div>
+    <h2 class="title"><em>Configuración</em> frente a <em>perfil</em></h2>
+    <div class="content two-col">
+      <div class="card">
+        <h3>Configuración</h3>
+        <p>«¿Qué clase de dispositivo es este?» Tamaño, densidad, memoria, sensores presentes. Se materializa en cualificadores de recursos (<code>values-en</code>, <code>layout-land</code>, <code>drawable-xxhdpi</code>).</p>
+      </div>
+      <div class="card">
+        <h3>Perfil</h3>
+        <p>Relación entre dispositivo y app: qué APIs hay, qué requisitos exige. Se define con minSdk/targetSdk y <code>&lt;uses-feature&gt;</code> en el Manifest.</p>
+      </div>
+    </div>
+    <p class="foot-note">Google Play filtra automáticamente el catálogo: un dispositivo sin cámara no verá una app que la requiere.</p>
+  </section>
+
+  <!-- 34. dp/sp -->
+  <section class="slide">
+    <div class="kicker">04 · Emuladores y perfiles</div>
+    <h2 class="title">Densidad de pantalla: <em>dp y sp</em></h2>
+    <div class="content two-col">
+      <table class="tbl">
+        <tr><th>Unidad</th><th>Uso</th><th>Definición</th></tr>
+        <tr><td><code>dp</code></td><td>Tamaños y márgenes</td><td>1 dp = 1 px a 160 ppp</td></tr>
+        <tr><td><code>sp</code></td><td>Solo texto</td><td>Como dp, respeta el tamaño de fuente del usuario</td></tr>
+        <tr><td><code>px</code></td><td>Casi nunca</td><td>Píxel físico real</td></tr>
+      </table>
+      <div class="term">
+        <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><div class="term-label">activity_main.xml</div></div>
+        <div class="term-body">&lt;Button
+    android:layout_width=<span class="a">"wrap_content"</span>
+    android:layout_height=<span class="a">"48dp"</span>
+    android:textSize=<span class="a">"16sp"</span> /&gt;</div>
+      </div>
+    </div>
+    <p class="foot-note">Usar sp en el texto no es cosmético: es accesibilidad. Si el texto está en dp, el ajuste de fuente del sistema se ignora.</p>
+  </section>
+
+  <!-- 35. EMULADOR VS DISPOSITIVO REAL -->
+  <section class="slide">
+    <div class="kicker">04 · Emuladores y perfiles</div>
+    <h2 class="title"><em>Emulador</em> frente a dispositivo real</h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th></th><th>Emulador</th><th>Dispositivo real</th></tr>
+        <tr><td><b>Variedad de configuraciones</b></td><td>Alta, gratuita</td><td>Limitada al hardware disponible</td></tr>
+        <tr><td><b>Sensores y red</b></td><td>Muy cómoda de simular</td><td>Difícil de controlar</td></tr>
+        <tr><td><b>Fidelidad de rendimiento</b></td><td>Engañosa</td><td>La única fiable</td></tr>
+        <tr><td><b>Cámara, Bluetooth, NFC</b></td><td>Limitados o ausentes</td><td>Completos</td></tr>
+      </table>
+      <p class="foot-note">Conclusión práctica: el emulador sirve para desarrollar y cubrir variedad; el dispositivo real es imprescindible para validar rendimiento y hardware. Se usan los dos.</p>
+    </div>
+  </section>
+
+  <!-- 36. DEPURAR EN DISPOSITIVO REAL -->
+  <section class="slide">
+    <div class="kicker">04 · Emuladores y perfiles</div>
+    <h2 class="title">Depurar en un <em>dispositivo real</em></h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul exnum">1</span><span>Ajustes → Información del teléfono, pulsar 7 veces en <b>Número de compilación</b>.</span></li>
+        <li><span class="bul exnum">2</span><span>Ajustes → Opciones de desarrollador → activar <b>Depuración por USB</b>.</span></li>
+        <li><span class="bul exnum">3</span><span>Conectar por cable y aceptar el diálogo de autorización.</span></li>
+        <li><span class="bul exnum">4</span><span>Comprobar con <code>adb devices</code> que aparece en la lista.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 37. ACTIVIDADES -->
+  <section class="slide">
+    <div class="kicker">05 · Actividades del tema</div>
+    <h2 class="title">Cuatro <em>entregas</em></h2>
+    <div class="content">
+      <div class="grid cols-2">
+        <div class="card"><div class="num">A1.1</div><h3>Estudio comparativo</h3><p>Tres tecnologías de familias distintas, comparadas. Criterios 1a, 1b.</p></div>
+        <div class="card"><div class="num">A1.2</div><h3>Puesta en marcha</h3><p>Android Studio + 3 AVD con perfiles distintos. Criterios 1c, 1d, 1e, 1h.</p></div>
+        <div class="card"><div class="num">A1.3</div><h3>Análisis de limitaciones</h3><p>Especificaciones de un dispositivo real + 3 conclusiones de diseño. Criterios 1a, 1d.</p></div>
+        <div class="card"><div class="num">A1.4</div><h3>Proyecto A: propuesta</h3><p>Primer hito del proyecto continuo del curso. Criterios 1a, 1b.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 38. PLANTILLA PROYECTO A -->
+  <section class="slide">
+    <div class="kicker">06 · Proyecto A</div>
+    <h2 class="title">La <em>plantilla</em> de propuesta</h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>La idea en una frase:</b> <span class="d">«Una app que permite a [quién] hacer [qué] para [para qué]».</span></span></li>
+        <li><span class="bul">→</span><span><b>Personas usuarias</b> <span class="d">concretas, no «todo el mundo».</span></span></li>
+        <li><span class="bul">→</span><span><b>3–4 funcionalidades imprescindibles,</b> <span class="d">no diez.</span></span></li>
+        <li><span class="bul">→</span><span><b>Pantallas, bocetos y datos</b> <span class="d">que maneja la app.</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 39. ENCAJE CON REQUISITOS -->
+  <section class="slide">
+    <div class="kicker">06 · Proyecto A</div>
+    <h2 class="title">El apartado que decide la <em>viabilidad</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Requisito</th><th>Tema</th></tr>
+        <tr><td>Persistencia de datos</td><td>4</td></tr>
+        <tr><td>Servicio web</td><td>5</td></tr>
+        <tr><td>Sensor o localización</td><td>6</td></tr>
+        <tr><td>Contenido multimedia</td><td>7</td></tr>
+      </table>
+      <p class="foot-note">Si alguna casilla queda vacía, la idea todavía no sirve para el proyecto: hay que estirarla o cambiarla. Vale más descubrirlo ahora que en febrero.</p>
+    </div>
+  </section>
+
+  <!-- 40. CIERRE -->
+  <section class="slide">
+    <div class="content" style="justify-content:center; align-items:flex-start;">
+      <div class="kicker">Fin del tema 1</div>
+      <h1 class="big">El móvil no es un <em>PC pequeño</em></h1>
+      <p class="subtitle">Es una plataforma con restricciones propias — y esas restricciones son el punto de partida de todo lo que programaremos este curso.</p>
+    </div>
+  </section>
+
+</div>
+
+<button class="nav-btn prev" id="prevBtn" aria-label="Anterior">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+</button>
+<button class="nav-btn next" id="nextBtn" aria-label="Siguiente">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+</button>
+
+<div style="position:fixed; bottom:0; left:0; right:0; padding: 0 72px 20px;">
+  <div class="deck-foot">
+    <span id="slideLabel">01 / 01</span>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <span>PMDM · Tema 1</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides = document.querySelectorAll('.slide');
+  var total = slides.length;
+  var idx = 0;
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function render(){
+    slides.forEach(function(s, i){ s.classList.toggle('active', i === idx); });
+    document.getElementById('slideLabel').textContent = pad(idx+1) + ' / ' + pad(total);
+    document.getElementById('progressBar').style.width = ((idx+1)/total*100) + '%';
+  }
+
+  function go(delta){
+    idx = Math.max(0, Math.min(total - 1, idx + delta));
+    render();
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', function(){ go(1); });
+  document.getElementById('prevBtn').addEventListener('click', function(){ go(-1); });
+
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ go(1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ go(-1); e.preventDefault(); }
+    else if (e.key === 'Home'){ idx = 0; render(); }
+    else if (e.key === 'End'){ idx = total - 1; render(); }
+  });
+
+  var touchStartX = null;
+  window.addEventListener('touchstart', function(e){ touchStartX = e.touches[0].clientX; });
+  window.addEventListener('touchend', function(e){
+    if (touchStartX === null) return;
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50){ go(dx < 0 ? 1 : -1); }
+    touchStartX = null;
+  });
+
+  render();
+})();
+</script>

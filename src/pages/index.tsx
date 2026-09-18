@@ -7,40 +7,57 @@ import Heading from '@theme/Heading';
 
 import styles from './index.module.css';
 
-type Tema = {
-  title: string;
-  path: string;
-  items: {label: string; to: string}[];
-};
+/* ─── Datos del curso ───────────────────────────────────────── */
+type TemaPage = {label: string; href: string};
+type Tema = {n: number; title: string; color: string; pages: TemaPage[]};
 
 // ─── ÍNDICE DE CONTENIDOS ─────────────────────────────────────────────────────
 // Añade aquí cada tema conforme se vaya creando el contenido en src/pages/tema-N/.
 // Recuerda replicar la entrada correspondiente en el dropdown "Temas"
 // de docusaurus.config.ts.
-//
-//   {
-//     title: 'Tema 0 — Título del tema',
-//     path: '/tema-0',
-//     items: [
-//       { label: 'Introducción', to: '/tema-0/a-introduccion' },
-//     ],
-//   },
 // ─────────────────────────────────────────────────────────────────────────────
 const TEMAS: Tema[] = [
   {
-    title: 'Tema 1 — El ecosistema móvil y el entorno de trabajo',
-    path: '/tema-1',
-    items: [
-      {label: 'Dispositivos móviles', to: '/tema-1/a-dispositivos-moviles'},
-      {label: 'Tecnologías de desarrollo', to: '/tema-1/b-tecnologias-desarrollo'},
-      {label: 'Entorno: Android Studio', to: '/tema-1/c-entorno-android-studio'},
-      {label: 'Emuladores y perfiles', to: '/tema-1/d-emuladores-y-perfiles'},
-      {label: 'Actividades', to: '/tema-1/e-actividades'},
-      {label: 'Plantilla del Proyecto A', to: '/tema-1/f-plantilla-proyecto'},
+    n: 1,
+    title: 'El ecosistema móvil y el entorno de trabajo',
+    color: '#f59e0b',
+    pages: [
+      {label: 'Dispositivos móviles', href: '/tema-1/a-dispositivos-moviles'},
+      {label: 'Tecnologías de desarrollo', href: '/tema-1/b-tecnologias-desarrollo'},
+      {label: 'Entorno: Android Studio', href: '/tema-1/c-entorno-android-studio'},
+      {label: 'Emuladores y perfiles', href: '/tema-1/d-emuladores-y-perfiles'},
+      {label: 'Actividades', href: '/tema-1/e-actividades'},
+      {label: 'Plantilla del Proyecto A', href: '/tema-1/f-plantilla-proyecto'},
     ],
   },
 ];
 
+/* ─── Tarjeta de tema ───────────────────────────────────────── */
+function TemaCard({tema}: {tema: Tema}) {
+  return (
+    <div className={styles.temaCard} style={{borderTopColor: tema.color}}>
+      <div className={styles.temaCardHeader}>
+        <span className={styles.temaNumber} style={{background: tema.color}}>
+          T{tema.n}
+        </span>
+        <Heading as="h3" className={styles.temaTitle}>
+          <Link to={tema.pages[0].href} style={{color: tema.color}}>
+            {tema.title}
+          </Link>
+        </Heading>
+      </div>
+      <ul className={styles.temaPageList}>
+        {tema.pages.map((p) => (
+          <li key={p.href}>
+            <Link to={p.href}>{p.label}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/* ─── Hero ──────────────────────────────────────────────────── */
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   return (
@@ -55,55 +72,29 @@ function HomepageHeader() {
   );
 }
 
-function TopicIndex() {
-  return (
-    <section style={{maxWidth: '960px', margin: '48px auto', padding: '0 24px'}}>
-      <Heading as="h2" style={{marginBottom: '32px'}}>
-        Índice de contenidos
-      </Heading>
-      {TEMAS.length === 0 ? (
-        <p>Aún no hay contenido publicado.</p>
-      ) : (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '24px',
-          }}>
-          {TEMAS.map((tema) => (
-            <div
-              key={tema.path}
-              style={{
-                border: '1px solid var(--ifm-color-emphasis-300)',
-                borderRadius: '8px',
-                padding: '20px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
-              }}>
-              <Heading as="h3" style={{fontSize: '1rem', marginBottom: '12px'}}>
-                {tema.title}
-              </Heading>
-              <ul style={{listStyle: 'none', padding: 0, margin: 0}}>
-                {tema.items.map((item) => (
-                  <li key={item.to} style={{marginBottom: '4px'}}>
-                    <Link to={item.to}>{item.label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      )}
-    </section>
-  );
-}
-
+/* ─── Página principal ──────────────────────────────────────── */
 export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout title={siteConfig.title} description={siteConfig.tagline}>
       <HomepageHeader />
       <main>
-        <TopicIndex />
+        <section className={styles.temasSection}>
+          <div className="container">
+            <Heading as="h2" className={styles.sectionTitle}>
+              Índice de contenidos
+            </Heading>
+            {TEMAS.length === 0 ? (
+              <p>Aún no hay contenido publicado.</p>
+            ) : (
+              <div className={styles.temasGrid}>
+                {TEMAS.map((tema) => (
+                  <TemaCard key={tema.n} tema={tema} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
       </main>
     </Layout>
   );

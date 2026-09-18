@@ -12,6 +12,14 @@ const config: Config = {
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
+    faster: {
+      // El bundler Rspack de @docusaurus/faster provoca un panic interno al
+      // arrancar `docusaurus start` en este entorno (Node 24 + Windows).
+      // Se desactiva solo esa pieza; el resto de mejoras de "faster" se
+      // mantienen activas.
+      rspackBundler: false,
+      rspackPersistentCache: false,
+    },
   },
 
   // Set the production url of your site here
@@ -68,6 +76,7 @@ const config: Config = {
           ],
         },
         {to: '/tema-1/f-plantilla-proyecto', label: 'Proyecto A', position: 'left'},
+        {to: '/presentaciones', label: 'Presentaciones', position: 'left'},
         {to: '/changelogs', label: 'Changelogs', position: 'left'},
       ],
     },
