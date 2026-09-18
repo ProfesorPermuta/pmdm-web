@@ -73,6 +73,10 @@ const config: Config = {
               label: 'Tema 1 — El ecosistema móvil y el entorno',
               to: '/tema-1/a-dispositivos-moviles',
             },
+            {
+              label: 'Tema 2 — Componentes y ciclo de vida',
+              to: '/tema-2/a-componentes-android',
+            },
           ],
         },
         {to: '/tema-1/f-plantilla-proyecto', label: 'Proyecto A', position: 'left'},

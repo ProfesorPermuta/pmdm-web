@@ -30,6 +30,18 @@ const TEMAS: Tema[] = [
       {label: 'Plantilla del Proyecto A', href: '/tema-1/f-plantilla-proyecto'},
     ],
   },
+  {
+    n: 2,
+    title: 'Anatomía de una aplicación Android: componentes y ciclo de vida',
+    color: '#3b82f6',
+    pages: [
+      {label: 'Componentes y el Manifest', href: '/tema-2/a-componentes-android'},
+      {label: 'Recursos: layouts, drawables y strings', href: '/tema-2/b-recursos'},
+      {label: 'Ciclo de vida de la Activity', href: '/tema-2/c-ciclo-vida-activity'},
+      {label: 'Ciclo de vida de la app y Git', href: '/tema-2/d-ciclo-vida-app-git'},
+      {label: 'Actividades', href: '/tema-2/e-actividades'},
+    ],
+  },
 ];
 
 /* ─── Tarjeta de tema ───────────────────────────────────────── */

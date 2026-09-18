@@ -1,4 +1,5 @@
 import DownloadButton from '@site/src/components/DownloadButton';
+import NextPageButton from '@site/src/components/NextPageButton';
 
 # Plantilla: propuesta del Proyecto A
 
@@ -269,3 +270,7 @@ Descárgate la plantilla en Markdown, ábrela con cualquier editor de texto y re
 <DownloadButton file="plantillas/plantilla-proyecto-a.md" filename="plantilla-proyecto-a.md">
   Descargar plantilla (.md)
 </DownloadButton>
+
+<NextPageButton to="/tema-2/a-componentes-android">
+Tema 2: anatomía de una aplicación Android
+</NextPageButton>
