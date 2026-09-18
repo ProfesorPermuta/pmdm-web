@@ -62,16 +62,18 @@ class MainActivity : AppCompatActivity() {
 
 ### El flujo normal de arranque y cierre
 
-```
-onCreate() → onStart() → onResume()  →  [la app está en uso]  →  onPause() → onStop() → onDestroy()
+```mermaid
+flowchart LR
+    A[onCreate] --> B[onStart] --> C[onResume] --> D[["la app está en uso"]] --> E[onPause] --> F[onStop] --> G[onDestroy]
 ```
 
 ### Qué pasa al cambiar de aplicación un momento
 
 Si el usuario pulsa el botón de inicio y vuelve enseguida, **no** se pasa por `onCreate` ni `onDestroy`:
 
-```
-onPause() → onStop()  →  [usuario vuelve]  →  onStart() → onResume()
+```mermaid
+flowchart LR
+    A[onPause] --> B[onStop] --> C[["usuario vuelve"]] --> D[onStart] --> E[onResume]
 ```
 
 La `Activity` sigue viva en memoria, simplemente detenida. Por eso `onStop` y `onRestart`/`onStart` existen por separado de `onCreate`/`onDestroy`: son cosas distintas.
@@ -124,30 +126,25 @@ Esto no es persistencia
 
 ## Diagrama de transición de estados
 
-```
-        ┌──────────┐
-        │ onCreate │  (la Activity nace)
-        └────┬─────┘
-             ▼
-        ┌──────────┐
-   ┌───▶│ onStart  │◀────────────┐
-   │    └────┬─────┘             │
-   │         ▼                   │
-   │    ┌──────────┐             │
-   │    │ onResume │             │  onRestart
-   │    └────┬─────┘             │
-   │         ▼ (usuario en la app)
-   │    ┌──────────┐             │
-   │    │ onPause  │             │
-   │    └────┬─────┘             │
-   │         ▼                   │
-   │    ┌──────────┐             │
-   └────│ onStop   │─────────────┘
-        └────┬─────┘
-             ▼
-        ┌───────────┐
-        │ onDestroy │  (la Activity muere)
-        └───────────┘
+```mermaid
+stateDiagram-v2
+    [*] --> onCreate
+    onCreate --> onStart
+    onStart --> onResume
+    onResume --> onPause: el usuario deja de interactuar
+    onPause --> onResume: vuelve a primer plano
+    onPause --> onStop
+    onStop --> onRestart: el usuario vuelve a la app
+    onRestart --> onStart
+    onStop --> onDestroy
+    onDestroy --> [*]
+
+    note right of onResume
+        La Activity está en uso
+    end note
+    note right of onDestroy
+        La Activity muere
+    end note
 ```
 
 ---

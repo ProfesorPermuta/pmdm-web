@@ -10,7 +10,7 @@ Las actividades son **abiertas**: se indica el objetivo y lo que hay que entrega
 
 **Objetivo:** identificar en un proyecto real los componentes y clases que se han presentado en este tema.
 
-Elige una aplicación Android de código abierto (por ejemplo, en GitHub) de tamaño moderado — ni un "Hello World" de un fichero, ni un proyecto con decenas de módulos.
+Analiza **Jetnews**, una aplicación de lectura de noticias dentro del repositorio [android/compose-samples](https://github.com/android/compose-samples/tree/main/Jetnews), publicado por Google como colección de ejemplos oficiales en Kotlin y Jetpack Compose. Es un proyecto de tamaño moderado y bien organizado: ni un "Hello World" de un fichero, ni un proyecto con decenas de módulos.
 
 Sobre ella, elabora un **diagrama** (a mano, con una herramienta de diagramación, o incluso una tabla bien organizada) que muestre:
 

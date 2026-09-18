@@ -1,0 +1,1294 @@
+<!doctype html>
+<title>Tema 2 · Componentes y ciclo de vida</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg: #0a1410;
+  --surface: #0f1d17;
+  --surface-2: #142821;
+  --border: #1e3b2f;
+  --text: #eef6f1;
+  --text-dim: #9fbcac;
+  --text-faint: #6b8a79;
+  --accent: #34d399;
+  --accent-strong: #10b981;
+  --accent-deep: #065f46;
+  --amber: #f5c76e;
+  --rose: #e88b8b;
+  --shadow: 0 20px 60px -20px rgba(0,0,0,0.6);
+}
+
+:root[data-theme="light"]{
+  --bg: #f4f8f5;
+  --surface: #ffffff;
+  --surface-2: #eaf3ec;
+  --border: #d3e5da;
+  --text: #0e1f17;
+  --text-dim: #3f5f4f;
+  --text-faint: #6f8f7c;
+  --accent: #0f9d6b;
+  --accent-strong: #0c8a5c;
+  --accent-deep: #d7f0e2;
+  --amber: #a5730a;
+  --rose: #b3423f;
+  --shadow: 0 20px 50px -25px rgba(15,60,40,0.25);
+}
+
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg: #f4f8f5;
+    --surface: #ffffff;
+    --surface-2: #eaf3ec;
+    --border: #d3e5da;
+    --text: #0e1f17;
+    --text-dim: #3f5f4f;
+    --text-faint: #6f8f7c;
+    --accent: #0f9d6b;
+    --accent-strong: #0c8a5c;
+    --accent-deep: #d7f0e2;
+    --amber: #a5730a;
+    --rose: #b3423f;
+    --shadow: 0 20px 50px -25px rgba(15,60,40,0.25);
+  }
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+.deck{
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+}
+
+.slide{
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  padding: 56px 72px 40px;
+  opacity: 0;
+}
+.slide.active{
+  display: flex;
+  opacity: 1;
+  animation: rise .5s ease both;
+}
+@keyframes rise{
+  from{ opacity:0; transform: translateY(14px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce){
+  .slide.active{ animation: none; }
+}
+
+.kicker{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.kicker::before{
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+h1.big{
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(40px, 5.4vw, 76px);
+  line-height: 1.02;
+  margin: 0 0 20px;
+  text-wrap: balance;
+  color: var(--text);
+}
+h1.big em{
+  font-style: italic;
+  color: var(--accent);
+}
+
+h2.title{
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(32px, 3.6vw, 52px);
+  line-height: 1.05;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+h2.title em{ font-style: italic; color: var(--accent); }
+
+.subtitle{
+  font-size: 18px;
+  color: var(--text-dim);
+  max-width: 60ch;
+  margin: 0 0 8px;
+}
+
+.content{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+}
+
+.two-col{
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+}
+@media (max-width: 900px){
+  .two-col{ grid-template-columns: 1fr; }
+}
+
+/* terminal / motivo recurrente (opcional: adapta term-label a tu dominio) */
+.term{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+}
+.term-bar{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.term-dot{ width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.term-dot:nth-child(1){ background: var(--rose); opacity:.7;}
+.term-dot:nth-child(2){ background: var(--amber); opacity:.7;}
+.term-dot:nth-child(3){ background: var(--accent); opacity:.7;}
+.term-label{
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+.term-body{
+  padding: 20px 22px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+.term-body .c{ color: var(--text-faint); }
+.term-body .g{ color: var(--accent); }
+.term-body .a{ color: var(--amber); }
+.term-body .rose{ color: var(--rose); }
+.term-body .prompt{ color: var(--accent-strong); font-weight: 600; }
+.cursor{
+  display:inline-block; width: 8px; height: 16px;
+  background: var(--accent);
+  margin-left: 2px;
+  animation: blink 1.1s steps(1) infinite;
+  vertical-align: -2px;
+}
+@keyframes blink{ 50%{ opacity: 0; } }
+
+/* Listas con viñeta */
+ul.list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 18px; }
+ul.list li{
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  font-size: 19px;
+  line-height: 1.45;
+}
+ul.list li .bul{
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  font-size: 16px;
+  padding-top: 3px;
+  flex-shrink: 0;
+}
+ul.list li b{ color: var(--text); }
+ul.list li span.d{ color: var(--text-dim); }
+
+/* grid de tarjetas */
+.grid{ display: grid; gap: 20px; }
+.grid.cols-3{ grid-template-columns: repeat(3, 1fr); }
+.grid.cols-2{ grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 900px){
+  .grid.cols-3, .grid.cols-2{ grid-template-columns: 1fr; }
+}
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.card .num{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: .08em;
+}
+.card h3{
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: 26px;
+  color: var(--text);
+}
+.card p{ margin: 0; color: var(--text-dim); font-size: 15px; line-height: 1.5; }
+
+/* tabla */
+table.tbl{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+table.tbl th{
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+table.tbl td{
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+}
+table.tbl td b, table.tbl td code{ color: var(--text); }
+table.tbl tr:last-child td{ border-bottom: none; }
+code{
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: .9em;
+  color: var(--accent);
+}
+
+/* tarjeta contenedora de diagramas SVG */
+.svg-card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.svg-card svg{ width: 100%; height: auto; display: block; }
+.svg-card .lbl{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  fill: var(--text-dim);
+}
+.svg-card .lbl-strong{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--text);
+}
+.svg-card .lane-label{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .04em;
+  fill: var(--text-faint);
+}
+.svg-card .edge{ stroke: var(--text-faint); stroke-width: 2; fill: none; }
+.svg-card .edge-a{ stroke: var(--accent); stroke-width: 2.5; fill: none; }
+.svg-card .edge-b{ stroke: var(--amber); stroke-width: 2.5; fill: none; }
+.svg-card .commit{ fill: var(--surface); stroke: var(--text-faint); stroke-width: 2.5; }
+.svg-card .commit-a{ fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; }
+.svg-card .commit-b{ fill: var(--surface); stroke: var(--amber); stroke-width: 2.5; }
+.svg-card .commit-m{ fill: var(--amber); stroke: var(--amber); stroke-width: 2.5; }
+.svg-card .commit-ghost{ fill: none; stroke: var(--border); stroke-width: 2; stroke-dasharray: 3 4; }
+.svg-card .box{ fill: var(--surface-2); stroke: var(--border); stroke-width: 1.5; rx: 10; }
+.svg-card .box-accent{ fill: color-mix(in oklab, var(--accent) 12%, var(--surface-2)); stroke: var(--accent); stroke-width: 1.5; rx: 10; }
+.svg-card .arrow{ stroke: var(--text-faint); stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+.svg-card .arrow-accent{ stroke: var(--accent); stroke-width: 2; fill: none; marker-end: url(#arrowhead-accent); }
+
+/* hueco para imagen pendiente de añadir a mano */
+.img-placeholder{
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 180px;
+  color: var(--text-faint);
+  text-align: center;
+}
+.img-placeholder .ph-icon{
+  width: 36px; height: 36px;
+  color: var(--text-faint);
+}
+.img-placeholder .ph-file{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+}
+.img-placeholder .ph-desc{
+  font-size: 13px;
+  max-width: 42ch;
+  line-height: 1.4;
+}
+
+/* badges */
+.badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+  width: fit-content;
+}
+.badge.warn{ color: var(--amber); background: color-mix(in oklab, var(--amber) 10%, transparent); }
+.badge.err{ color: var(--rose); background: color-mix(in oklab, var(--rose) 10%, transparent); }
+
+.foot-note{
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--text-faint);
+  border-left: 2px solid var(--accent-deep);
+  padding-left: 14px;
+}
+
+/* pie de página / progreso */
+.deck-foot{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-faint);
+  letter-spacing: .04em;
+}
+.progress{
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  margin: 0 24px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-bar{
+  height: 100%;
+  background: var(--accent-strong);
+  transition: width .35s ease;
+}
+
+.nav-btn{
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: color .15s, border-color .15s, transform .15s;
+  opacity: .55;
+}
+.nav-btn:hover{ opacity: 1; color: var(--accent); border-color: var(--accent); }
+.nav-btn.prev{ left: 18px; }
+.nav-btn.next{ right: 18px; }
+.nav-btn svg{ width: 18px; height: 18px; }
+
+.exnum{
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+}
+
+::selection{ background: color-mix(in oklab, var(--accent) 35%, transparent); }
+
+a{ color: var(--accent); }
+a:hover{ color: var(--accent-strong); }
+</style>
+
+<div class="deck" id="deck">
+
+  <!-- 1. PORTADA -->
+  <section class="slide active">
+    <div class="content" style="justify-content:center; align-items:flex-start;">
+      <div class="kicker">PMDM · Tema 2</div>
+      <h1 class="big">Componentes y <em>ciclo de vida</em></h1>
+      <p class="subtitle">De qué está hecha una aplicación Android por dentro, cómo se declara en el Manifest, y cómo sobrevive (o no) a los cambios que le impone el sistema.</p>
+    </div>
+  </section>
+
+  <!-- 2. MAPA DEL TEMA -->
+  <section class="slide">
+    <div class="kicker">Mapa del tema</div>
+    <h2 class="title">Cinco paradas hasta entender por qué Android <em>manda</em></h2>
+    <div class="content">
+      <div class="grid cols-3">
+        <div class="card">
+          <div class="num">01</div>
+          <h3>Componentes y Manifest</h3>
+          <p>Las cuatro piezas de una app y la tarjeta de identidad que las declara.</p>
+        </div>
+        <div class="card">
+          <div class="num">02</div>
+          <h3>Intents</h3>
+          <p>Cómo se comunican los componentes entre sí y con el sistema.</p>
+        </div>
+        <div class="card">
+          <div class="num">03</div>
+          <h3>Recursos</h3>
+          <p>Layouts, drawables, strings y cualificadores de configuración.</p>
+        </div>
+        <div class="card">
+          <div class="num">04</div>
+          <h3>Ciclo de vida de la Activity</h3>
+          <p>Los callbacks que deciden si tu app pierde datos al girar la pantalla.</p>
+        </div>
+        <div class="card">
+          <div class="num">05</div>
+          <h3>App y control de versiones</h3>
+          <p>El ciclo de vida de la app como producto, y Git como herramienta obligatoria.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECCIÓN 01 · COMPONENTES ═══════════════ -->
+
+  <!-- 3 -->
+  <section class="slide">
+    <div class="kicker">01 · Componentes de una app Android</div>
+    <h2 class="title">No hay un <em>main()</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>En Programación</b><span class="d"> el programa arranca en un punto único y se ejecuta de arriba a abajo.</span></span></li>
+          <li><span class="bul">→</span><span><b>En Android</b><span class="d"> una app es un conjunto de piezas independientes que el sistema crea, destruye y combina según lo necesite.</span></span></li>
+          <li><span class="bul">→</span><span><b>No decides tú</b><span class="d"> cuándo se ejecuta tu código: es el sistema quien llama a tus componentes cuando hace falta.</span></span></li>
+        </ul>
+        <div class="svg-card">
+          <svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+                <path d="M0,0 L10,4 L0,8 Z" fill="var(--text-faint)"/>
+              </marker>
+            </defs>
+            <rect class="box-accent" x="140" y="10" width="140" height="46" rx="10"/>
+            <text x="210" y="38" text-anchor="middle" class="lbl-strong">Sistema Android</text>
+            <path class="arrow" d="M175,56 L100,110" marker-end="url(#arrowhead)"/>
+            <path class="arrow" d="M210,56 V110" marker-end="url(#arrowhead)"/>
+            <path class="arrow" d="M245,56 L320,110" marker-end="url(#arrowhead)"/>
+            <rect class="box" x="30" y="115" width="140" height="46" rx="10"/>
+            <text x="100" y="143" text-anchor="middle" class="lbl">Activity</text>
+            <rect class="box" x="180" y="115" width="60" height="46" rx="10"/>
+            <text x="210" y="143" text-anchor="middle" class="lbl">Service</text>
+            <rect class="box" x="250" y="115" width="140" height="46" rx="10"/>
+            <text x="320" y="143" text-anchor="middle" class="lbl">Receiver</text>
+            <rect class="box" x="140" y="175" width="140" height="40" rx="10"/>
+            <text x="210" y="200" text-anchor="middle" class="lbl">Content Provider</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <div class="kicker">01 · Componentes de una app Android</div>
+    <h2 class="title">Los cuatro <em>tipos</em> de componente</h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Componente</th><th>Para qué sirve</th></tr>
+        <tr><td><code>Activity</code></td><td>Representa una pantalla con la que interactúa el usuario. El más usado, con diferencia.</td></tr>
+        <tr><td><code>Service</code></td><td>Ejecuta trabajo en segundo plano, sin interfaz propia (música, sincronización, descargas).</td></tr>
+        <tr><td><code>Broadcast Receiver</code></td><td>Escucha anuncios del sistema u otras apps (batería baja, cambio de red, arranque).</td></tr>
+        <tr><td><code>Content Provider</code></td><td>Gestiona acceso a datos compartidos entre aplicaciones. El menos usado de los cuatro.</td></tr>
+      </table>
+      <p class="foot-note">Cualquier app está construida combinando algunos de estos cuatro bloques — no hace falta usarlos todos.</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <div class="kicker">01 · Componentes de una app Android</div>
+    <h2 class="title"><em>Activity</em>: una pantalla</h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Una pantalla</b><span class="d"> (login, listado, detalle, ajustes...), aunque varias pantallas pueden convivir en una misma Activity con fragmentos o navegación.</span></span></li>
+          <li><span class="bul">→</span><span><b>Ciclo de vida propio</b><span class="d">, gestionado por el sistema: se crea, se pausa, se reanuda, se destruye.</span></span></li>
+        </ul>
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">MainActivity.kt</span>
+          </div>
+          <div class="term-body"><span class="c">class</span> MainActivity : AppCompatActivity() {
+    <span class="g">override fun</span> onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+}<span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <div class="kicker">01 · Componentes de una app Android</div>
+    <h2 class="title"><em>Service</em> y <em>Broadcast Receiver</em></h2>
+    <div class="content">
+      <div class="grid cols-2">
+        <div class="card">
+          <div class="num">SERVICE</div>
+          <h3>Trabajo en segundo plano</h3>
+          <p>Sin interfaz propia. Sirve para operaciones que continúan aunque el usuario cambie de pantalla: reproducir música, sincronizar, descargar.</p>
+          <p><b>Ojo:</b> no crea un hilo nuevo por defecto — corre en el hilo principal, igual que una Activity.</p>
+        </div>
+        <div class="card">
+          <div class="num">BROADCAST RECEIVER</div>
+          <h3>Escucha anuncios del sistema</h3>
+          <p>Batería baja, cambio de conectividad, SMS entrante, arranque del dispositivo. Sin interfaz, trabajo breve: recibe y delega.</p>
+        </div>
+      </div>
+      <div class="term" style="margin-top:20px;">
+        <div class="term-bar">
+          <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+          <span class="term-label">BateriaBajaReceiver.kt</span>
+        </div>
+        <div class="term-body"><span class="c">class</span> BateriaBajaReceiver : BroadcastReceiver() {
+    <span class="g">override fun</span> onReceive(context: Context, intent: Intent) {
+        <span class="c">// Reaccionar al evento del sistema</span>
+    }
+}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <div class="kicker">01 · Componentes de una app Android</div>
+    <h2 class="title"><em>Content Provider</em></h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Acceso a datos compartidos</b><span class="d"> entre aplicaciones, mediante una interfaz uniforme parecida a una base de datos.</span></span></li>
+        <li><span class="bul">→</span><span><b>Ejemplo real</b><span class="d">: la app de Contactos deja que otras apps consulten (con permiso) los contactos del usuario.</span></span></li>
+        <li><span class="bul">→</span><span><b>El menos usado</b><span class="d"> de los cuatro en aplicaciones típicas; se retoma al trabajar almacenamiento compartido.</span></span></li>
+      </ul>
+      <p class="foot-note">Confundir un Service con una Activity es un error típico de principiante: cada componente tiene ciclo de vida y reglas distintas.</p>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <div class="kicker">01 · El AndroidManifest.xml</div>
+    <h2 class="title">La <em>tarjeta de identidad</em> de la app</h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Declaración obligatoria</b><span class="d">: todo componente que la app quiera usar debe estar en el Manifest, en la raíz de <code>src/main/</code>.</span></span></li>
+          <li><span class="bul">→</span><span><b>Si no está declarado</b><span class="d">, el sistema no sabe que existe y la app falla al intentar usarlo.</span></span></li>
+        </ul>
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">AndroidManifest.xml</span>
+          </div>
+          <div class="term-body">&lt;<span class="g">activity</span> android:name=<span class="a">".MainActivity"</span>
+    android:exported=<span class="a">"true"</span>&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name=<span class="a">"...MAIN"</span> /&gt;
+        &lt;category android:name=<span class="a">"...LAUNCHER"</span> /&gt;
+    &lt;/intent-filter&gt;
+&lt;/activity&gt;
+
+&lt;<span class="g">service</span> android:name=<span class="a">".SincronizacionService"</span> /&gt;
+&lt;<span class="g">receiver</span> android:name=<span class="a">".BateriaBajaReceiver"</span> /&gt;</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <div class="kicker">01 · El AndroidManifest.xml</div>
+    <h2 class="title">Preguntas que el Manifest <em>responde</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Pregunta</th><th>Dónde se responde</th></tr>
+        <tr><td>¿Qué componentes tiene la app?</td><td><code>&lt;activity&gt;</code>, <code>&lt;service&gt;</code>, <code>&lt;receiver&gt;</code>, <code>&lt;provider&gt;</code></td></tr>
+        <tr><td>¿Por dónde se arranca?</td><td>El <code>&lt;intent-filter&gt;</code> con <code>MAIN</code> y <code>LAUNCHER</code></td></tr>
+        <tr><td>¿Qué permisos necesita?</td><td><code>&lt;uses-permission&gt;</code></td></tr>
+        <tr><td>¿Qué versiones de Android soporta?</td><td><code>minSdk</code>, <code>targetSdk</code></td></tr>
+        <tr><td>¿Qué icono y nombre muestra?</td><td><code>android:icon</code>, <code>android:label</code></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide">
+    <div class="kicker">01 · El AndroidManifest.xml</div>
+    <h2 class="title">El <em>intent-filter</em> de arranque y <code style="font-size:.6em;">exported</code></h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">intent-filter</span>
+          </div>
+          <div class="term-body">&lt;intent-filter&gt;
+    &lt;action android:name=
+        <span class="a">"android.intent.action.MAIN"</span> /&gt;
+    &lt;category android:name=
+        <span class="a">"android.intent.category.LAUNCHER"</span> /&gt;
+&lt;/intent-filter&gt;</div>
+        </div>
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>"Esta es la Activity"</b><span class="d"> que se abre al tocar el icono. Sin ella, la app se instala pero no aparece en el launcher.</span></span></li>
+          <li><span class="bul">→</span><span><b><code>android:exported</code></b><span class="d"> indica si el componente puede ser invocado por otras apps. Obligatorio declararlo desde Android 12 si hay <code>intent-filter</code>.</span></span></li>
+          <li><span class="bul">→</span><span><b>Por defecto, <code>false</code></b><span class="d"> salvo que exista una razón concreta para exponer el componente.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide">
+    <div class="kicker">01 · Intents</div>
+    <h2 class="title">Cómo se <em>comunican</em> los componentes</h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Intent</b><span class="d">: un objeto que describe una intención de acción. Es el mecanismo para pasar de un componente a otro o pedirle algo al sistema.</span></span></li>
+      </ul>
+      <div class="svg-card" style="margin-top:24px;">
+        <svg viewBox="0 0 560 120" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead2" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+          <rect class="box" x="20" y="35" width="180" height="50" rx="10"/>
+          <text x="110" y="65" text-anchor="middle" class="lbl-strong">Activity A</text>
+          <path class="arrow-accent" d="M205,60 H320" marker-end="url(#arrowhead2)"/>
+          <text x="262" y="48" text-anchor="middle" class="lbl">Intent</text>
+          <rect class="box-accent" x="325" y="35" width="210" height="50" rx="10"/>
+          <text x="430" y="65" text-anchor="middle" class="lbl-strong">Activity B / Sistema</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="slide">
+    <div class="kicker">01 · Intents</div>
+    <h2 class="title">Intent <em>explícito</em> vs. <em>implícito</em></h2>
+    <div class="content">
+      <div class="grid cols-2">
+        <div class="card">
+          <div class="num">EXPLÍCITO</div>
+          <h3>Se sabe qué componente</h3>
+          <p>Indica exactamente qué componente se quiere lanzar. Típico al navegar entre pantallas de la misma app.</p>
+        </div>
+        <div class="card">
+          <div class="num">IMPLÍCITO</div>
+          <h3>Se describe la acción</h3>
+          <p>Describe una acción a realizar sin decir quién la hace. El sistema busca entre las apps instaladas cuál puede resolverla.</p>
+        </div>
+      </div>
+      <div class="two-col" style="margin-top:20px;">
+        <div class="term">
+          <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><span class="term-label">explícito</span></div>
+          <div class="term-body"><span class="g">val</span> intent = Intent(<span class="c">this</span>, DetalleActivity::<span class="c">class</span>.java)
+intent.putExtra(<span class="a">"id_elemento"</span>, 42)
+startActivity(intent)</div>
+        </div>
+        <div class="term">
+          <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><span class="term-label">implícito</span></div>
+          <div class="term-body"><span class="g">val</span> intent = Intent(Intent.ACTION_VIEW,
+    Uri.parse(<span class="a">"https://www.google.com"</span>))
+startActivity(intent)</div>
+        </div>
+      </div>
+      <p class="foot-note">Extras: los datos que viajan con <code>putExtra</code> deben ser serializables (primitivos, String, Parcelable...).</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECCIÓN 02 · RECURSOS ═══════════════ -->
+
+  <!-- 13 -->
+  <section class="slide">
+    <div class="kicker">02 · Recursos</div>
+    <h2 class="title">Código y recursos, <em>separados</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>La carpeta <code>res/</code></b><span class="d"> guarda todo lo que no es lógica en Kotlin, organizado por tipo.</span></span></li>
+          <li><span class="bul">→</span><span><b>Clase <code>R</code></b><span class="d"> generada automáticamente: cada recurso recibe un identificador (<code>R.layout.activity_main</code>, <code>R.string.app_name</code>).</span></span></li>
+        </ul>
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">res/</span>
+          </div>
+          <div class="term-body">res/
+├── layout/     <span class="c">← diseños XML</span>
+├── drawable/   <span class="c">← imágenes, iconos</span>
+├── mipmap/     <span class="c">← iconos de la app</span>
+├── values/
+│   ├── strings.xml
+│   ├── colors.xml
+│   └── styles.xml
+├── menu/
+├── anim/
+└── raw/</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section class="slide">
+    <div class="kicker">02 · Recursos</div>
+    <h2 class="title"><em>Layouts</em>: diseño de pantalla en XML</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">activity_main.xml</span>
+          </div>
+          <div class="term-body">&lt;LinearLayout
+    android:layout_width=<span class="a">"match_parent"</span>
+    android:layout_height=<span class="a">"match_parent"</span>
+    android:orientation=<span class="a">"vertical"</span>&gt;
+
+    &lt;TextView
+        android:id=<span class="a">"@+id/tituloTextView"</span>
+        android:text=<span class="a">"@string/titulo"</span> /&gt;
+
+    &lt;Button
+        android:id=<span class="a">"@+id/aceptarButton"</span> /&gt;
+&lt;/LinearLayout&gt;</div>
+        </div>
+        <ul class="list">
+          <li><span class="bul">→</span><span><b><code>@+id</code> vs <code>@id</code></b><span class="d">: crea un identificador nuevo vs. referencia uno existente. Nunca texto literal en el layout.</span></span></li>
+          <li><span class="bul">→</span><span><b><code>match_parent</code> / <code>wrap_content</code></b><span class="d">: todo el espacio del padre vs. solo lo necesario.</span></span></li>
+          <li><span class="bul">→</span><span><b><code>setContentView</code></b><span class="d"> infla el layout; <code>findViewById</code> accede a sus vistas por id.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 15 -->
+  <section class="slide">
+    <div class="kicker">02 · Recursos</div>
+    <h2 class="title"><em>Drawables</em> y <em>strings.xml</em></h2>
+    <div class="content">
+      <div class="grid cols-2">
+        <div class="card">
+          <div class="num">DRAWABLES</div>
+          <h3>Cualquier cosa dibujable</h3>
+          <p>Imágenes (<code>.png</code>, <code>.webp</code>), iconos vectoriales y formas XML. Los <code>VectorDrawable</code> escalan sin perder calidad a cualquier densidad.</p>
+        </div>
+        <div class="card">
+          <div class="num">STRINGS.XML</div>
+          <h3>Textos centralizados</h3>
+          <p>Todo texto visible va aquí, nunca en el layout o el código: permite internacionalización (<code>values-en/</code>) y mantenimiento en un solo sitio.</p>
+        </div>
+      </div>
+      <div class="term" style="margin-top:20px;">
+        <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><span class="term-label">res/drawable/fondo_boton.xml</span></div>
+        <div class="term-body">&lt;shape android:shape=<span class="a">"rectangle"</span>&gt;
+    &lt;solid android:color=<span class="a">"@color/primario"</span> /&gt;
+    &lt;corners android:radius=<span class="a">"8dp"</span> /&gt;
+&lt;/shape&gt;</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 16 -->
+  <section class="slide">
+    <div class="kicker">02 · Recursos</div>
+    <h2 class="title">Cualificadores de <em>configuración</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Cualificador</th><th>Ejemplo de carpeta</th><th>Selecciona según...</th></tr>
+        <tr><td>Idioma</td><td><code>values-en/</code></td><td>Idioma del sistema</td></tr>
+        <tr><td>Orientación</td><td><code>layout-land/</code></td><td>Orientación actual del dispositivo</td></tr>
+        <tr><td>Ancho mínimo</td><td><code>layout-sw600dp/</code></td><td>Tamaño de pantalla (tablets)</td></tr>
+        <tr><td>Densidad</td><td><code>drawable-xxhdpi/</code></td><td>Densidad de píxeles</td></tr>
+        <tr><td>Tema</td><td><code>values-night/</code></td><td>Modo claro u oscuro</td></tr>
+      </table>
+      <p class="foot-note">El sistema resuelve automáticamente qué versión usar en tiempo de ejecución: no se escribe ningún <code>if</code> para esto.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECCIÓN 03 · CICLO DE VIDA DE LA ACTIVITY ═══════════════ -->
+
+  <!-- 17 -->
+  <section class="slide">
+    <div class="kicker">03 · Ciclo de vida de la Activity</div>
+    <h2 class="title">La idea más <em>importante</em> del tema</h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Memoria limitada y compartida</b><span class="d"> entre todas las apps abiertas: el sistema puede matar una app en segundo plano sin avisar.</span></span></li>
+        <li><span class="bul">→</span><span><b>El ciclo de vida</b><span class="d"> es la respuesta de Android: estados y callbacks para que la app se entere de lo que le pasa y reaccione a tiempo.</span></span></li>
+        <li><span class="bul">→</span><span><b>Consecuencia</b><span class="d">: una Activity mal preparada pierde datos del usuario en cuanto gira la pantalla o cambia de app un momento.</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 18 -->
+  <section class="slide">
+    <div class="kicker">03 · Ciclo de vida de la Activity</div>
+    <h2 class="title">Los tres <em>estados</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Estado</th><th>Qué significa</th></tr>
+        <tr><td><b>Activo</b> (resumed)</td><td>En primer plano, el usuario interactúa con ella.</td></tr>
+        <tr><td><b>Pausado</b> (paused / stopped)</td><td>Sigue viva pero sin foco: parcialmente visible o completamente oculta.</td></tr>
+        <tr><td><b>Destruido</b></td><td>Ha dejado de existir. El sistema liberó sus recursos.</td></tr>
+      </table>
+      <p class="foot-note">Estos tres estados se traducen en una secuencia más fina de callbacks que Android invoca sobre la Activity.</p>
+    </div>
+  </section>
+
+  <!-- 19 -->
+  <section class="slide">
+    <div class="kicker">03 · Ciclo de vida de la Activity</div>
+    <h2 class="title">Los <em>callbacks</em> del ciclo de vida</h2>
+    <div class="content">
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+          <span class="term-label">MainActivity.kt</span>
+        </div>
+        <div class="term-body"><span class="c">class</span> MainActivity : AppCompatActivity() {
+    <span class="g">override fun</span> onCreate(s: Bundle?) { <span class="c">/* inicializar vistas */</span> }
+    <span class="g">override fun</span> onStart()   { <span class="c">/* se hace visible */</span> }
+    <span class="g">override fun</span> onResume()  { <span class="c">/* gana el foco */</span> }
+    <span class="g">override fun</span> onPause()   { <span class="c">/* pierde el foco */</span> }
+    <span class="g">override fun</span> onStop()    { <span class="c">/* ya no es visible */</span> }
+    <span class="g">override fun</span> onDestroy() { <span class="c">/* se libera */</span> }
+}<span class="cursor"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 -->
+  <section class="slide">
+    <div class="kicker">03 · Ciclo de vida de la Activity</div>
+    <h2 class="title">Flujo normal de <em>arranque y cierre</em></h2>
+    <div class="content" style="justify-content:center;">
+      <div class="svg-card">
+        <svg viewBox="0 0 900 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead3" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--text-faint)"/>
+            </marker>
+          </defs>
+          <rect class="box" x="0" y="28" width="110" height="44" rx="8"/><text x="55" y="55" text-anchor="middle" class="lbl-strong">onCreate</text>
+          <path class="arrow" d="M112,50 H148" marker-end="url(#arrowhead3)"/>
+          <rect class="box" x="150" y="28" width="110" height="44" rx="8"/><text x="205" y="55" text-anchor="middle" class="lbl-strong">onStart</text>
+          <path class="arrow" d="M262,50 H298" marker-end="url(#arrowhead3)"/>
+          <rect class="box-accent" x="300" y="28" width="120" height="44" rx="8"/><text x="360" y="55" text-anchor="middle" class="lbl-strong">onResume</text>
+          <path class="arrow" d="M422,50 H468" marker-end="url(#arrowhead3)"/>
+          <rect class="box-accent" x="470" y="28" width="130" height="44" rx="8" stroke-dasharray="4 3"/><text x="535" y="55" text-anchor="middle" class="lbl">en uso</text>
+          <path class="arrow" d="M602,50 H638" marker-end="url(#arrowhead3)"/>
+          <rect class="box" x="640" y="28" width="110" height="44" rx="8"/><text x="695" y="55" text-anchor="middle" class="lbl-strong">onPause</text>
+          <path class="arrow" d="M752,50 H788" marker-end="url(#arrowhead3)"/>
+          <rect class="box" x="790" y="28" width="110" height="44" rx="8"/><text x="845" y="55" text-anchor="middle" class="lbl-strong">onStop</text>
+        </svg>
+      </div>
+      <p class="foot-note">Tras <code>onStop</code> vendría <code>onDestroy</code> si la Activity se destruye del todo.</p>
+    </div>
+  </section>
+
+  <!-- 21 -->
+  <section class="slide">
+    <div class="kicker">03 · Ciclo de vida de la Activity</div>
+    <h2 class="title">Cambiar de app <em>un momento</em></h2>
+    <div class="content" style="justify-content:center;">
+      <p class="subtitle">Si el usuario pulsa inicio y vuelve enseguida, <b>no</b> se pasa por <code>onCreate</code> ni <code>onDestroy</code>:</p>
+      <div class="svg-card">
+        <svg viewBox="0 0 780 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead4" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--text-faint)"/>
+            </marker>
+          </defs>
+          <rect class="box" x="0" y="28" width="110" height="44" rx="8"/><text x="55" y="55" text-anchor="middle" class="lbl-strong">onPause</text>
+          <path class="arrow" d="M112,50 H148" marker-end="url(#arrowhead4)"/>
+          <rect class="box" x="150" y="28" width="100" height="44" rx="8"/><text x="200" y="55" text-anchor="middle" class="lbl-strong">onStop</text>
+          <path class="arrow" d="M252,50 H288" marker-end="url(#arrowhead4)"/>
+          <rect class="box" x="290" y="28" width="150" height="44" rx="8" stroke-dasharray="4 3"/><text x="365" y="55" text-anchor="middle" class="lbl">usuario vuelve</text>
+          <path class="arrow" d="M442,50 H478" marker-end="url(#arrowhead4)"/>
+          <rect class="box-accent" x="480" y="28" width="110" height="44" rx="8"/><text x="535" y="55" text-anchor="middle" class="lbl-strong">onStart</text>
+          <path class="arrow" d="M592,50 H628" marker-end="url(#arrowhead4)"/>
+          <rect class="box-accent" x="630" y="28" width="130" height="44" rx="8"/><text x="695" y="55" text-anchor="middle" class="lbl-strong">onResume</text>
+        </svg>
+      </div>
+      <p class="foot-note">La Activity sigue viva en memoria, simplemente detenida: por eso <code>onStop</code>/<code>onStart</code> son distintos de <code>onCreate</code>/<code>onDestroy</code>.</p>
+    </div>
+  </section>
+
+  <!-- 22 -->
+  <section class="slide">
+    <div class="kicker">03 · Ciclo de vida de la Activity</div>
+    <h2 class="title">El caso que rompe apps de principiante: <em>rotar la pantalla</em></h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul">1</span><span><b>Cambio de configuración</b><span class="d">: girar el dispositivo cuenta como tal para Android (como los cualificadores <code>layout-land/</code>).</span></span></li>
+        <li><span class="bul">2</span><span><b>Destruye</b><span class="d"> la Activity actual: <code>onPause → onStop → onDestroy</code>.</span></span></li>
+        <li><span class="bul">3</span><span><b>La recrea</b><span class="d"> desde cero: <code>onCreate → onStart → onResume</code>, cargando el layout adecuado a la nueva orientación.</span></span></li>
+      </ul>
+      <p class="foot-note">Cualquier variable en memoria se pierde si no se ha hecho nada para evitarlo: un formulario a medio rellenar desaparece con un simple giro.</p>
+    </div>
+  </section>
+
+  <!-- 23 -->
+  <section class="slide">
+    <div class="kicker">03 · Ciclo de vida de la Activity</div>
+    <h2 class="title">Guardar estado: <em>onSaveInstanceState</em></h2>
+    <div class="content">
+      <div class="term">
+        <div class="term-bar">
+          <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+          <span class="term-label">MainActivity.kt</span>
+        </div>
+        <div class="term-body"><span class="g">override fun</span> onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putString(<span class="a">"texto_usuario"</span>, campoTexto.text.toString())
+}
+
+<span class="g">override fun</span> onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    <span class="c">if</span> (savedInstanceState != <span class="c">null</span>) {
+        <span class="g">val</span> texto = savedInstanceState.getString(<span class="a">"texto_usuario"</span>)
+    }
+}</div>
+      </div>
+      <p class="foot-note">Se invoca <b>antes</b> de destruirse por cambio de configuración; el Bundle vuelve como parámetro de <code>onCreate</code>.</p>
+    </div>
+  </section>
+
+  <!-- 24 -->
+  <section class="slide">
+    <div class="kicker">03 · Ciclo de vida de la Activity</div>
+    <h2 class="title">Diagrama de <em>transición de estados</em></h2>
+    <div class="content" style="justify-content:center;">
+      <div class="svg-card">
+        <svg viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead5" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--text-faint)"/>
+            </marker>
+            <marker id="arrowhead5a" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--accent)"/>
+            </marker>
+          </defs>
+
+          <rect class="box" x="250" y="10" width="140" height="44" rx="8"/><text x="320" y="37" text-anchor="middle" class="lbl-strong">onCreate</text>
+          <path class="arrow" d="M320,54 V88" marker-end="url(#arrowhead5)"/>
+
+          <rect class="box" x="250" y="90" width="140" height="44" rx="8"/><text x="320" y="117" text-anchor="middle" class="lbl-strong">onStart</text>
+          <path class="arrow-accent" d="M320,134 V168" marker-end="url(#arrowhead5a)"/>
+
+          <rect class="box-accent" x="250" y="170" width="140" height="44" rx="8"/><text x="320" y="197" text-anchor="middle" class="lbl-strong">onResume</text>
+          <path class="arrow" d="M320,214 V248" marker-end="url(#arrowhead5)"/>
+
+          <rect class="box" x="250" y="250" width="140" height="44" rx="8"/><text x="320" y="277" text-anchor="middle" class="lbl-strong">onPause</text>
+          <path class="arrow" d="M320,294 V318" marker-end="url(#arrowhead5)"/>
+
+          <rect class="box" x="250" y="320" width="0" height="0"/>
+
+          <!-- rama: onPause vuelve directamente a onResume -->
+          <path class="edge" d="M250,272 C170,272 170,192 246,192" marker-end="url(#arrowhead5)"/>
+          <text x="120" y="238" text-anchor="middle" class="lane-label">vuelve a primer plano</text>
+
+          <!-- rama: onStop -->
+          <rect class="box" x="470" y="250" width="120" height="44" rx="8"/><text x="530" y="277" text-anchor="middle" class="lbl-strong">onStop</text>
+          <path class="edge" d="M390,272 H466" marker-end="url(#arrowhead5)"/>
+
+          <!-- onStop -> onRestart -> onStart -->
+          <path class="edge-a" d="M470,262 C420,262 420,110 394,102" marker-end="url(#arrowhead5a)"/>
+          <text x="450" y="170" text-anchor="middle" class="lane-label" transform="rotate(-90 450 170)">onRestart</text>
+
+          <!-- onStop -> onDestroy -->
+          <path class="arrow" d="M530,294 V318" marker-end="url(#arrowhead5)"/>
+          <rect class="box" x="470" y="320" width="120" height="0"/>
+          <rect class="box" x="470" y="318" width="120" height="0"/>
+        </svg>
+      </div>
+      <div class="grid cols-2" style="margin-top:16px;">
+        <div class="card"><div class="num">onStop →</div><h3 style="font-size:20px;">onRestart → onStart</h3><p>El usuario vuelve a la app tras haberla dejado del todo en segundo plano.</p></div>
+        <div class="card"><div class="num">onStop →</div><h3 style="font-size:20px;">onDestroy</h3><p>El sistema la mata definitivamente por falta de memoria o cierre completo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 25 -->
+  <section class="slide">
+    <div class="kicker">03 · Ciclo de vida de la Activity</div>
+    <h2 class="title">Observarlo con <em>Logcat</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">MainActivity.kt</span>
+          </div>
+          <div class="term-body"><span class="c">private val</span> TAG = <span class="a">"CicloVida"</span>
+
+<span class="g">override fun</span> onCreate(s: Bundle?) {
+    super.onCreate(s)
+    Log.d(TAG, <span class="a">"onCreate"</span>)
+    setContentView(R.layout.activity_main)
+}
+
+<span class="g">override fun</span> onStart() {
+    super.onStart()
+    Log.d(TAG, <span class="a">"onStart"</span>)
+}
+<span class="c">// ... resto de callbacks</span></div>
+        </div>
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Logcat + filtro</b><span class="d"> por la etiqueta <code>CicloVida</code> muestra el orden exacto de llamadas.</span></span></li>
+          <li><span class="bul">→</span><span><b>Provoca y observa</b><span class="d">: girar la pantalla, pulsar inicio y volver, cerrar y reabrir.</span></span></li>
+          <li><span class="bul">→</span><span><b>La mejor forma</b><span class="d"> de convertir esta teoría en algo tangible.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECCIÓN 04 · APP Y GIT ═══════════════ -->
+
+  <!-- 26 -->
+  <section class="slide">
+    <div class="kicker">04 · Ciclo de vida de la app y Git</div>
+    <h2 class="title">El ciclo de vida de la app como <em>producto</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Fase</th><th>Qué ocurre</th></tr>
+        <tr><td><b>Descubrimiento</b></td><td>Tienda de apps, búsqueda, recomendación, enlace directo.</td></tr>
+        <tr><td><b>Instalación</b></td><td>El sistema descarga el paquete, verifica firma y permisos.</td></tr>
+        <tr><td><b>Ejecución</b></td><td>Combina internamente los ciclos de vida de Activities, Services y demás.</td></tr>
+        <tr><td><b>Actualización</b></td><td>Sustituye el paquete, normalmente conservando los datos del usuario.</td></tr>
+        <tr><td><b>Borrado</b></td><td>Desinstalación: libera el espacio ocupado.</td></tr>
+      </table>
+      <p class="foot-note"><code>versionCode</code> / <code>versionName</code> existen para que el sistema sepa si un paquete nuevo es realmente más reciente.</p>
+    </div>
+  </section>
+
+  <!-- 27 -->
+  <section class="slide">
+    <div class="kicker">04 · Ciclo de vida de la app y Git</div>
+    <h2 class="title">Procesos en <em>segundo plano</em></h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>"Cerrar" no es destruir</b><span class="d">: al pulsar inicio, el proceso normalmente sigue vivo en segundo plano una temporada.</span></span></li>
+        <li><span class="bul">→</span><span><b>Jerarquía de prioridades</b><span class="d">: cuando el sistema necesita memoria, mata procesos en segundo plano empezando por los de menor prioridad.</span></span></li>
+        <li><span class="bul">→</span><span><b>Conecta con <code>onSaveInstanceState</code></b><span class="d">: ambos mecanismos existen para que ese cierre silencioso no se note al volver a abrir la app.</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 28 -->
+  <section class="slide">
+    <div class="kicker">04 · Ciclo de vida de la app y Git</div>
+    <h2 class="title">El <em>administrador de aplicaciones</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Ajustes → Aplicaciones</b><span class="d">: inspecciona y actúa sobre el ciclo de vida de cualquier app instalada.</span></span></li>
+          <li><span class="bul">→</span><span><b>Forzar detención</b><span class="d"> simula que el sistema la ha matado — útil para depurar un arranque limpio.</span></span></li>
+          <li><span class="bul">→</span><span><b>Borrar caché</b><span class="d"> (recuperable) vs. <b>borrar datos</b> (como reinstalar desde cero).</span></span></li>
+        </ul>
+        <div class="grid" style="grid-template-columns:1fr;">
+          <div class="card"><div class="num">→</div><h3>Ver versión y espacio</h3><p>App, datos y caché.</p></div>
+          <div class="card"><div class="num">→</div><h3>Revocar permisos</h3><p>Y desinstalar.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 29 -->
+  <section class="slide">
+    <div class="kicker">04 · Ciclo de vida de la app y Git</div>
+    <h2 class="title">Modificar una app <em>existente</em></h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">1</span><span><b>Lee el <code>AndroidManifest.xml</code></b><span class="d"> primero: mapa rápido de componentes y punto de entrada.</span></span></li>
+        <li><span class="bul">2</span><span><b>Localiza la Activity de arranque</b><span class="d"> (el <code>intent-filter</code> con <code>MAIN</code>/<code>LAUNCHER</code>) y sigue el flujo desde ahí.</span></span></li>
+        <li><span class="bul">3</span><span><b>Identifica la estructura de paquetes</b><span class="d">: por capa (<code>ui</code>, <code>data</code>, <code>model</code>) o por característica.</span></span></li>
+        <li><span class="bul">4</span><span><b>Ejecuta la app</b><span class="d"> antes de tocar nada, como punto de referencia.</span></span></li>
+        <li><span class="bul">5</span><span><b>Haz el cambio mínimo</b><span class="d"> necesario y vuelve a probar.</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 30 -->
+  <section class="slide">
+    <div class="kicker">04 · Ciclo de vida de la app y Git</div>
+    <h2 class="title">Git: obligatorio desde <em>este tema</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Historial de cambios</b><span class="d">: volver a un estado anterior sin depender de copias manuales de carpetas.</span></span></li>
+          <li><span class="bul">→</span><span><b>Trazabilidad del trabajo</b><span class="d">: el seguimiento continuo del Proyecto A se apoya en commits regulares, no solo en la entrega final.</span></span></li>
+        </ul>
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">bash</span>
+          </div>
+          <div class="term-body"><span class="prompt">$</span> git init
+<span class="prompt">$</span> git add .
+<span class="prompt">$</span> git commit -m <span class="a">"Esqueleto inicial del proyecto"</span>
+
+<span class="c"># tras cada avance con sentido:</span>
+<span class="prompt">$</span> git add .
+<span class="prompt">$</span> git commit -m <span class="a">"Añade pantalla de detalle"</span><span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 31 -->
+  <section class="slide">
+    <div class="kicker">04 · Ciclo de vida de la app y Git</div>
+    <h2 class="title">Buenas prácticas de <em>commit</em></h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Commits pequeños y frecuentes</b><span class="d">, no un único commit gigante al final del tema.</span></span></li>
+        <li><span class="bul">→</span><span><b>Mensajes que describan el qué</b><span class="d"> y, si hace falta, el porqué — no "cambios" o "arreglos".</span></span></li>
+        <li><span class="bul">→</span><span><b>El proyecto debe compilar</b><span class="d"> tras cada commit, siempre que sea razonablemente posible.</span></span></li>
+      </ul>
+      <p class="foot-note">Qué NO se sube: carpetas de compilación (<code>build/</code>) y ficheros locales del IDE. Revisa el <code>.gitignore</code> que trae el proyecto, no lo sustituyas por uno genérico.</p>
+    </div>
+  </section>
+
+  <!-- 32. ACTIVIDADES -->
+  <section class="slide">
+    <div class="kicker">Actividades del tema</div>
+    <h2 class="title">De la <em>teoría</em> a la práctica</h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul exnum">A2.1</span><span><b>Análisis de una app de código abierto</b><span class="d"> — Jetnews, dentro de <code>android/compose-samples</code>: Activities, componentes, Manifest y estructura de paquetes.</span></span></li>
+        <li><span class="bul exnum">A2.2</span><span><b>Modificación funcional</b><span class="d"> de esa misma app: un cambio pequeño pero visible, documentado.</span></span></li>
+        <li><span class="bul exnum">A2.3</span><span><b>Experimento de ciclo de vida</b><span class="d">: trazas de Log.d en todos los callbacks, Logcat y <code>onSaveInstanceState</code>.</span></span></li>
+        <li><span class="bul exnum">A2.4</span><span><b>Hito de proyecto</b><span class="d">: esqueleto del Proyecto A, con Git desde el primer commit.</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 33. CIERRE -->
+  <section class="slide">
+    <div class="content" style="justify-content:center; align-items:flex-start;">
+      <div class="kicker">PMDM · Tema 2</div>
+      <h1 class="big">El sistema <em>manda</em>, tu código <em>reacciona</em></h1>
+      <p class="subtitle">Entender el ciclo de vida no es un trámite: es la diferencia entre una app que respeta al usuario y una que le hace perder su trabajo con un simple giro de pantalla.</p>
+    </div>
+  </section>
+
+</div>
+
+<button class="nav-btn prev" id="prevBtn" aria-label="Anterior">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+</button>
+<button class="nav-btn next" id="nextBtn" aria-label="Siguiente">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+</button>
+
+<div style="position:fixed; bottom:0; left:0; right:0; padding: 0 72px 20px;">
+  <div class="deck-foot">
+    <span id="slideLabel">01 / 01</span>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <span>PMDM · Tema 2</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides = document.querySelectorAll('.slide');
+  var total = slides.length;
+  var idx = 0;
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function render(){
+    slides.forEach(function(s, i){ s.classList.toggle('active', i === idx); });
+    document.getElementById('slideLabel').textContent = pad(idx+1) + ' / ' + pad(total);
+    document.getElementById('progressBar').style.width = ((idx+1)/total*100) + '%';
+  }
+
+  function go(delta){
+    idx = Math.max(0, Math.min(total - 1, idx + delta));
+    render();
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', function(){ go(1); });
+  document.getElementById('prevBtn').addEventListener('click', function(){ go(-1); });
+
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ go(1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ go(-1); e.preventDefault(); }
+    else if (e.key === 'Home'){ idx = 0; render(); }
+    else if (e.key === 'End'){ idx = total - 1; render(); }
+  });
+
+  var touchStartX = null;
+  window.addEventListener('touchstart', function(e){ touchStartX = e.touches[0].clientX; });
+  window.addEventListener('touchend', function(e){
+    if (touchStartX === null) return;
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50){ go(dx < 0 ? 1 : -1); }
+    touchStartX = null;
+  });
+
+  render();
+})();
+</script>

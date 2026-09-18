@@ -17,6 +17,12 @@ const PRESENTACIONES: Presentacion[] = [
     color: '#f59e0b',
     href: '/presentaciones/tema-1.html',
   },
+  {
+    n: 2,
+    title: 'Componentes y ciclo de vida',
+    color: '#10b981',
+    href: '/presentaciones/tema-2.html',
+  },
 ];
 
 /* ─── Tarjeta de presentación ───────────────────────────────── */
