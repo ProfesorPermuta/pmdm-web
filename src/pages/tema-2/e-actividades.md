@@ -27,6 +27,8 @@ Respuesta a la pregunta
 
 ---
 
+Si alguna de las actividades necesita entregar código no lo hagas sobre este proyecto, crea un nuevo repositorio y en adr, en el apartado de la actividad, crea un enlace hacia el repositorio con el nuevo código.
+
 ## A2.1 · Análisis de una app de código abierto
 
 **Objetivo:** identificar en un proyecto real los componentes y clases que se han presentado en este tema.
@@ -69,7 +71,6 @@ Sobre la misma aplicación de la actividad A2.1 (u otra indicada en clase), aña
    - Girar la pantalla.
    - Pulsar el botón de inicio y volver a la app.
    - Cerrar completamente la app y reabrirla.
-3. Implementa `onSaveInstanceState` para conservar algún dato de interfaz (por ejemplo, el texto de un campo) a través de una rotación de pantalla, y compruébalo.
 
 **Entrega:** capturas de Logcat de cada situación, comentadas, más el código de `onSaveInstanceState` y una comprobación de que funciona.
 
@@ -81,12 +82,15 @@ Sobre la misma aplicación de la actividad A2.1 (u otra indicada en clase), aña
 
 **Objetivo:** arrancar formalmente el desarrollo del Proyecto A definido en el tema 1.
 
-1. Crea el **repositorio Git** del proyecto (local y, si se indica en clase, remoto).
+1. Crea el **repositorio Git** del proyecto 
 2. Crea el proyecto en Android Studio con la estructura de paquetes que hayas decidido para tu aplicación.
 3. Declara en el `AndroidManifest.xml` al menos la Activity de arranque.
 4. Construye una **pantalla inicial** mínima (no hace falta que tenga toda la interfaz definitiva, solo debe compilar y ejecutarse).
-5. Haz el **primer commit** con este esqueleto y, a partir de aquí, mantén commits regulares en cada sesión de trabajo.
-
+5. Crea en la raiz del proyecto una carpeta llamada `docs/adr` donde mantendrás todos los adr solicitados a lo largo del curso. Añade aquí el adr del tema-1 y del tema-2.
+6. Crea la carpeta `docs/proyecto` con el contenido de la plantilla del tema-1 con las especificaciones de tu proyecto, asegurate de cubrir los campos del punto 0.
+7. Haz el **primer commit** con este esqueleto y, a partir de aquí, mantén commits regulares en cada sesión de trabajo.
+8. Añade a ProfesorPermuta como colaborador de tu proyecto
+   
 :::warning
 Este hito es la base de todo lo que viene
 A partir de este tema, cada nueva unidad añade una capa al mismo proyecto. Un esqueleto mal organizado (paquetes desordenados, sin Git desde el principio) se paga en las unidades siguientes. Merece la pena dedicarle el tiempo necesario.

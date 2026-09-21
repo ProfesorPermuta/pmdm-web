@@ -1,0 +1,1546 @@
+<!doctype html>
+<title>Tema 3 · Jetpack Compose: interfaces declarativas</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg: #0a1410;
+  --surface: #0f1d17;
+  --surface-2: #142821;
+  --border: #1e3b2f;
+  --text: #eef6f1;
+  --text-dim: #9fbcac;
+  --text-faint: #6b8a79;
+  --accent: #34d399;
+  --accent-strong: #10b981;
+  --accent-deep: #065f46;
+  --amber: #f5c76e;
+  --rose: #e88b8b;
+  --shadow: 0 20px 60px -20px rgba(0,0,0,0.6);
+}
+
+:root[data-theme="light"]{
+  --bg: #f4f8f5;
+  --surface: #ffffff;
+  --surface-2: #eaf3ec;
+  --border: #d3e5da;
+  --text: #0e1f17;
+  --text-dim: #3f5f4f;
+  --text-faint: #6f8f7c;
+  --accent: #0f9d6b;
+  --accent-strong: #0c8a5c;
+  --accent-deep: #d7f0e2;
+  --amber: #a5730a;
+  --rose: #b3423f;
+  --shadow: 0 20px 50px -25px rgba(15,60,40,0.25);
+}
+
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg: #f4f8f5;
+    --surface: #ffffff;
+    --surface-2: #eaf3ec;
+    --border: #d3e5da;
+    --text: #0e1f17;
+    --text-dim: #3f5f4f;
+    --text-faint: #6f8f7c;
+    --accent: #0f9d6b;
+    --accent-strong: #0c8a5c;
+    --accent-deep: #d7f0e2;
+    --amber: #a5730a;
+    --rose: #b3423f;
+    --shadow: 0 20px 50px -25px rgba(15,60,40,0.25);
+  }
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+.deck{
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+}
+
+.slide{
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  padding: 56px 72px 40px;
+  opacity: 0;
+}
+.slide.active{
+  display: flex;
+  opacity: 1;
+  animation: rise .5s ease both;
+}
+@keyframes rise{
+  from{ opacity:0; transform: translateY(14px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce){
+  .slide.active{ animation: none; }
+}
+
+.kicker{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.kicker::before{
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 22%, transparent);
+}
+
+h1.big{
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(40px, 5.4vw, 76px);
+  line-height: 1.02;
+  margin: 0 0 20px;
+  text-wrap: balance;
+  color: var(--text);
+}
+h1.big em{
+  font-style: italic;
+  color: var(--accent);
+}
+
+h2.title{
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: clamp(32px, 3.6vw, 52px);
+  line-height: 1.05;
+  margin: 0 0 8px;
+  text-wrap: balance;
+}
+h2.title em{ font-style: italic; color: var(--accent); }
+
+.subtitle{
+  font-size: 18px;
+  color: var(--text-dim);
+  max-width: 60ch;
+  margin: 0 0 8px;
+}
+
+.content{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+}
+
+.two-col{
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  flex: 1;
+  min-height: 0;
+}
+@media (max-width: 900px){
+  .two-col{ grid-template-columns: 1fr; }
+}
+
+/* terminal / motivo recurrente */
+.term{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+}
+.term-bar{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+.term-dot{ width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
+.term-dot:nth-child(1){ background: var(--rose); opacity:.7;}
+.term-dot:nth-child(2){ background: var(--amber); opacity:.7;}
+.term-dot:nth-child(3){ background: var(--accent); opacity:.7;}
+.term-label{
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+.term-body{
+  padding: 20px 22px;
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+.term-body .c{ color: var(--text-faint); }
+.term-body .g{ color: var(--accent); }
+.term-body .a{ color: var(--amber); }
+.term-body .rose{ color: var(--rose); }
+.term-body .prompt{ color: var(--accent-strong); font-weight: 600; }
+.cursor{
+  display:inline-block; width: 8px; height: 16px;
+  background: var(--accent);
+  margin-left: 2px;
+  animation: blink 1.1s steps(1) infinite;
+  vertical-align: -2px;
+}
+@keyframes blink{ 50%{ opacity: 0; } }
+
+/* Listas con viñeta */
+ul.list{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 18px; }
+ul.list li{
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  font-size: 19px;
+  line-height: 1.45;
+}
+ul.list li .bul{
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  font-size: 16px;
+  padding-top: 3px;
+  flex-shrink: 0;
+}
+ul.list li b{ color: var(--text); }
+ul.list li span.d{ color: var(--text-dim); }
+
+/* grid de tarjetas */
+.grid{ display: grid; gap: 20px; }
+.grid.cols-3{ grid-template-columns: repeat(3, 1fr); }
+.grid.cols-2{ grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 900px){
+  .grid.cols-3, .grid.cols-2{ grid-template-columns: 1fr; }
+}
+.card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.card .num{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: .08em;
+}
+.card h3{
+  margin: 0;
+  font-family: 'Instrument Serif', serif;
+  font-weight: 400;
+  font-size: 26px;
+  color: var(--text);
+}
+.card p{ margin: 0; color: var(--text-dim); font-size: 15px; line-height: 1.5; }
+
+/* tabla */
+table.tbl{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+table.tbl th{
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+table.tbl td{
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+}
+table.tbl td b, table.tbl td code{ color: var(--text); }
+table.tbl tr:last-child td{ border-bottom: none; }
+code{
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: .9em;
+  color: var(--accent);
+}
+
+/* tarjeta contenedora de diagramas SVG */
+.svg-card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.svg-card svg{ width: 100%; height: auto; display: block; }
+.svg-card .lbl{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  fill: var(--text-dim);
+}
+.svg-card .lbl-strong{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  fill: var(--text);
+}
+.svg-card .lane-label{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .04em;
+  fill: var(--text-faint);
+}
+.svg-card .edge{ stroke: var(--text-faint); stroke-width: 2; fill: none; }
+.svg-card .edge-a{ stroke: var(--accent); stroke-width: 2.5; fill: none; }
+.svg-card .edge-b{ stroke: var(--amber); stroke-width: 2.5; fill: none; }
+.svg-card .commit{ fill: var(--surface); stroke: var(--text-faint); stroke-width: 2.5; }
+.svg-card .commit-a{ fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; }
+.svg-card .commit-b{ fill: var(--surface); stroke: var(--amber); stroke-width: 2.5; }
+.svg-card .commit-m{ fill: var(--amber); stroke: var(--amber); stroke-width: 2.5; }
+.svg-card .commit-ghost{ fill: none; stroke: var(--border); stroke-width: 2; stroke-dasharray: 3 4; }
+.svg-card .box{ fill: var(--surface-2); stroke: var(--border); stroke-width: 1.5; rx: 10; }
+.svg-card .box-accent{ fill: color-mix(in oklab, var(--accent) 12%, var(--surface-2)); stroke: var(--accent); stroke-width: 1.5; rx: 10; }
+.svg-card .arrow{ stroke: var(--text-faint); stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+.svg-card .arrow-accent{ stroke: var(--accent); stroke-width: 2; fill: none; marker-end: url(#arrowhead-accent); }
+
+/* hueco para imagen pendiente de añadir a mano */
+.img-placeholder{
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 180px;
+  color: var(--text-faint);
+  text-align: center;
+}
+.img-placeholder .ph-icon{
+  width: 36px; height: 36px;
+  color: var(--text-faint);
+}
+.img-placeholder .ph-file{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+}
+.img-placeholder .ph-desc{
+  font-size: 13px;
+  max-width: 42ch;
+  line-height: 1.4;
+}
+
+/* tarjeta con imagen real ya recortada */
+.img-shot{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.img-shot img{
+  max-width: 100%;
+  max-height: 140px;
+  display: block;
+}
+.img-shot .shot-label{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-faint);
+  letter-spacing: .04em;
+}
+
+/* badges */
+.badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, transparent);
+  width: fit-content;
+}
+.badge.warn{ color: var(--amber); background: color-mix(in oklab, var(--amber) 10%, transparent); }
+.badge.err{ color: var(--rose); background: color-mix(in oklab, var(--rose) 10%, transparent); }
+
+.foot-note{
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--text-faint);
+  border-left: 2px solid var(--accent-deep);
+  padding-left: 14px;
+}
+
+/* pie de página / progreso */
+.deck-foot{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-faint);
+  letter-spacing: .04em;
+}
+.progress{
+  flex: 1;
+  height: 3px;
+  background: var(--border);
+  margin: 0 24px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-bar{
+  height: 100%;
+  background: var(--accent-strong);
+  transition: width .35s ease;
+}
+
+.nav-btn{
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: color .15s, border-color .15s, transform .15s;
+  opacity: .55;
+}
+.nav-btn:hover{ opacity: 1; color: var(--accent); border-color: var(--accent); }
+.nav-btn.prev{ left: 18px; }
+.nav-btn.next{ right: 18px; }
+.nav-btn svg{ width: 18px; height: 18px; }
+
+.exnum{
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+}
+
+::selection{ background: color-mix(in oklab, var(--accent) 35%, transparent); }
+
+a{ color: var(--accent); }
+a:hover{ color: var(--accent-strong); }
+</style>
+
+<div class="deck" id="deck">
+
+  <!-- 1. PORTADA -->
+  <section class="slide active">
+    <div class="content" style="justify-content:center; align-items:flex-start;">
+      <div class="kicker">PMDM · Tema 3</div>
+      <h1 class="big">Jetpack Compose: interfaces <em>declarativas</em></h1>
+      <p class="subtitle">Adiós a los layouts XML y al <code style="font-size:.6em;">findViewById</code>: la interfaz se describe con funciones, y el framework decide cómo dibujarla.</p>
+    </div>
+  </section>
+
+  <!-- 2. MAPA DEL TEMA -->
+  <section class="slide">
+    <div class="kicker">Mapa del tema</div>
+    <h2 class="title">De la función <em>Composable</em> a la pantalla completa</h2>
+    <div class="content">
+      <div class="grid cols-3">
+        <div class="card">
+          <div class="num">01</div>
+          <h3>Composables e invocación</h3>
+          <p>Qué es un composable, y cómo leer la sintaxis de parámetros y trailing lambda.</p>
+        </div>
+        <div class="card">
+          <div class="num">02</div>
+          <h3>Componentes de estructura</h3>
+          <p><code>Column</code>, <code>Row</code>, <code>Box</code> y sus variantes perezosas para listas largas.</p>
+        </div>
+        <div class="card">
+          <div class="num">03</div>
+          <h3>Componentes comunes</h3>
+          <p>El catálogo de controles ya hechos de Material 3: botones, campos, selección.</p>
+        </div>
+        <div class="card">
+          <div class="num">04</div>
+          <h3>Material 3: sistema de color</h3>
+          <p>De dónde salen los colores de cada componente y cómo elegir el correcto.</p>
+        </div>
+        <div class="card">
+          <div class="num">05</div>
+          <h3>Scaffold</h3>
+          <p>El esqueleto completo de pantalla: barras, menú lateral, FAB y snackbar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECCIÓN 01 · COMPOSABLES E INVOCACIÓN ═══════════════ -->
+
+  <!-- 3 -->
+  <section class="slide">
+    <div class="kicker">01 · Composables e invocación</div>
+    <h2 class="title">Declarativo vs. <em>imperativo</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Swing (Java)</span>
+          </div>
+          <div class="term-body">JPanel panel = <span class="g">new</span> JPanel();
+JButton boton = <span class="g">new</span> JButton(<span class="a">"Pulsa aquí"</span>);
+boton.addActionListener(e -&gt;
+    System.out.println(<span class="a">"¡Pulsado!"</span>));
+panel.add(boton);</div>
+        </div>
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Compose (Kotlin)</span>
+          </div>
+          <div class="term-body">Button(onClick = { println(<span class="a">"¡Pulsado!"</span>) }) {
+    Text(<span class="a">"Pulsa aquí"</span>)
+}<span class="cursor"></span></div>
+        </div>
+      </div>
+      <p class="foot-note">Sin <code>new</code>, sin <code>.add()</code>, sin una variable que se vaya configurando: una función que describe el resultado.</p>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <div class="kicker">01 · Composables e invocación</div>
+    <h2 class="title">Programar <em>el proceso</em> vs. programar <em>el resultado</em></h2>
+    <div class="content" style="justify-content:center;">
+      <div class="svg-card">
+        <svg viewBox="0 0 720 210" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--text-faint)"/>
+            </marker>
+          </defs>
+          <rect class="box" x="20" y="20" width="320" height="46" rx="10"/>
+          <text x="180" y="48" text-anchor="middle" class="lbl-strong">Imperativo (Swing, Views)</text>
+          <path class="arrow" d="M180,66 V96" marker-end="url(#arrowhead)"/>
+          <rect class="box" x="20" y="99" width="320" height="90" rx="10"/>
+          <text x="180" y="136" text-anchor="middle" class="lbl">Crear → configurar</text>
+          <text x="180" y="160" text-anchor="middle" class="lbl">→ añadir, paso a paso</text>
+
+          <rect class="box-accent" x="380" y="20" width="320" height="46" rx="10"/>
+          <text x="540" y="48" text-anchor="middle" class="lbl-strong">Declarativo (Compose)</text>
+          <path class="arrow-accent" d="M540,66 V96" marker-end="url(#arrowhead)"/>
+          <rect class="box-accent" x="380" y="99" width="320" height="90" rx="10"/>
+          <text x="540" y="136" text-anchor="middle" class="lbl">Describir el resultado;</text>
+          <text x="540" y="160" text-anchor="middle" class="lbl">Compose decide cómo llegar</text>
+        </svg>
+      </div>
+      <p class="foot-note">El mismo cambio de mentalidad que hay entre "escribir un bucle para sumar una lista" y usar <code>.sum()</code>.</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <div class="kicker">01 · Composables e invocación</div>
+    <h2 class="title">Un composable no es más que una <em>función</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Función normal de Kotlin</b><span class="d"> anotada con <code>@Composable</code>: le dice al compilador "esta función describe interfaz".</span></span></li>
+          <li><span class="bul">→</span><span><b><code>Button</code>, <code>Text</code>, <code>Column</code></b><span class="d">... todos son funciones así, nada más.</span></span></li>
+          <li><span class="bul">→</span><span><b>Regla especial</b><span class="d">: un composable solo puede llamarse desde dentro de otro composable.</span></span></li>
+        </ul>
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Saludo.kt</span>
+          </div>
+          <div class="term-body"><span class="g">@Composable</span>
+<span class="c">fun</span> Saludo(nombre: String) {
+    Text(text = <span class="a">"Hola, $nombre"</span>)
+}<span class="cursor"></span></div>
+        </div>
+      </div>
+      <p class="foot-note">Diferencia clave con Java: un método como <code>dibujarSaludo</code> muta vistas ya existentes; <code>Saludo</code> describe qué debe aparecer, y Compose decide cuándo dibujarlo.</p>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide">
+    <div class="kicker">01 · Composables e invocación</div>
+    <h2 class="title">Anatomía de <em>Button(...) { ... }</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Button</span>
+          </div>
+          <div class="term-body">Button(
+    onClick = { <span class="c">/* acción */</span> },
+    enabled = <span class="g">true</span>,
+    modifier = Modifier.padding(8.dp)
+) {
+    Text(<span class="a">"Pulsa aquí"</span>)
+}<span class="cursor"></span></div>
+        </div>
+        <ul class="list">
+          <li><span class="bul">( )</span><span><b>Parámetros con nombre</b><span class="d"> de la función: <code>onClick</code>, <code>enabled</code>, <code>modifier</code>...</span></span></li>
+          <li><span class="bul">{ }</span><span><b>El bloque de llaves</b><span class="d"> es también un parámetro: <code>content</code>, una lambda <code>@Composable () -&gt; Unit</code>.</span></span></li>
+        </ul>
+      </div>
+      <p class="foot-note">Si viene de Java, la única novedad real son los <b>parámetros con nombre</b> (<code>onClick = ...</code>), que Java simula con un patrón builder.</p>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <div class="kicker">01 · Composables e invocación</div>
+    <h2 class="title">La <em>trailing lambda</em>: azúcar sintáctico</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">equivalentes</span>
+          </div>
+          <div class="term-body">Button(onClick = { ... }) {
+    Text(<span class="a">"Pulsa aquí"</span>)
+}
+
+<span class="c">// es exactamente lo mismo que:</span>
+Button(
+    onClick = { ... },
+    content = { Text(<span class="a">"Pulsa aquí"</span>) }
+)</div>
+        </div>
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Regla de Kotlin</b><span class="d">: si el último parámetro de una función es una lambda, se puede sacar fuera de los paréntesis como bloque <code>{ }</code>.</span></span></li>
+          <li><span class="bul">→</span><span><b>Por eso "acepta contenido"</b><span class="d">: lo de dentro de las llaves son los composables que se dibujan dentro del botón.</span></span></li>
+        </ul>
+      </div>
+      <p class="foot-note">Visto con ojos de Java: como pasar dos interfaces funcionales a un método, pero con la facilidad extra de escribir la última como bloque aparte.</p>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <div class="kicker">01 · Composables e invocación</div>
+    <h2 class="title">Componer funciones: el <em>árbol de composición</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Pantalla.kt</span>
+          </div>
+          <div class="term-body"><span class="g">@Composable</span>
+<span class="c">fun</span> TarjetaUsuario(nombre: String, email: String) {
+    Column {
+        Text(text = nombre)
+        Text(text = email)
+    }
+}
+
+<span class="g">@Composable</span>
+<span class="c">fun</span> Pantalla() {
+    Column {
+        TarjetaUsuario(<span class="a">"Ana"</span>, <span class="a">"ana@x.com"</span>)
+        TarjetaUsuario(<span class="a">"Luis"</span>, <span class="a">"luis@x.com"</span>)
+    }
+}<span class="cursor"></span></div>
+        </div>
+        <div class="svg-card">
+          <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="arrowheadT8" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+                <path d="M0,0 L10,4 L0,8 Z" fill="var(--text-faint)"/>
+              </marker>
+            </defs>
+            <rect class="box-accent" x="140" y="10" width="100" height="38" rx="8"/><text x="190" y="34" text-anchor="middle" class="lbl-strong">Pantalla</text>
+            <path class="edge" d="M190,48 V70"/>
+            <rect class="box" x="140" y="72" width="100" height="38" rx="8"/><text x="190" y="96" text-anchor="middle" class="lbl">Column</text>
+            <path class="edge" d="M165,110 L70,140"/>
+            <path class="edge" d="M215,110 L310,140"/>
+            <rect class="box" x="10" y="142" width="120" height="38" rx="8"/><text x="70" y="166" text-anchor="middle" class="lbl" style="font-size:11px;">TarjetaUsuario(Ana)</text>
+            <rect class="box" x="250" y="142" width="120" height="38" rx="8"/><text x="310" y="166" text-anchor="middle" class="lbl" style="font-size:11px;">TarjetaUsuario(Luis)</text>
+          </svg>
+        </div>
+      </div>
+      <p class="foot-note">Una interfaz completa en Compose es un árbol de llamadas a funciones composables. Ese árbol es lo que Compose recorre para dibujar y, más adelante, recomponer.</p>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide">
+    <div class="kicker">01 · Composables e invocación</div>
+    <h2 class="title">No es lo mismo que anidar <em>Views en XML</em></h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>El resultado visual</b><span class="d"> puede recordar a anidar <code>&lt;LinearLayout&gt;</code> dentro de otro, pero la mecánica es distinta.</span></span></li>
+        <li><span class="bul">→</span><span><b>Aquí no se construye</b><span class="d"> un árbol de objetos que luego se infla: se llaman funciones normales de Kotlin.</span></span></li>
+        <li><span class="bul">→</span><span><b>Eso permite</b><span class="d"> condicionales, bucles, variables locales, funciones auxiliares... mucho más incómodo de expresar en un XML estático.</span></span></li>
+      </ul>
+      <p class="foot-note">Cualquier bloque reutilizable de interfaz se extrae como un composable propio, igual que en Java se extrae un método privado para no repetir código.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECCIÓN 02 · COMPONENTES DE ESTRUCTURA ═══════════════ -->
+
+  <!-- 10 -->
+  <section class="slide">
+    <div class="kicker">02 · Componentes de estructura</div>
+    <h2 class="title">Organizar la pantalla: <em>layout</em></h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>No dibujan nada</b><span class="d"> por sí mismos: su trabajo es organizar a sus hijos en el espacio disponible.</span></span></li>
+        <li><span class="bul">→</span><span><b>Equivalente conceptual</b><span class="d"> a <code>LinearLayout</code>, <code>FrameLayout</code> y <code>RecyclerView</code> del sistema de Views clásico, con una API más directa.</span></span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide">
+    <div class="kicker">02 · Componentes de estructura</div>
+    <h2 class="title"><em>Column</em>: apilar de arriba a abajo</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Column</span>
+          </div>
+          <div class="term-body">Column(
+    verticalArrangement =
+        Arrangement.SpaceBetween,
+    horizontalAlignment =
+        Alignment.CenterHorizontally
+) {
+    Text(<span class="a">"Arriba"</span>)
+    Text(<span class="a">"Abajo"</span>)
+}<span class="cursor"></span></div>
+        </div>
+        <div class="svg-card">
+          <svg viewBox="0 0 260 180" xmlns="http://www.w3.org/2000/svg">
+            <rect class="box" x="10" y="10" width="240" height="160" rx="10"/>
+            <rect class="box-accent" x="30" y="30" width="200" height="30" rx="6"/><text x="130" y="50" text-anchor="middle" class="lbl">Primera línea</text>
+            <rect class="box-accent" x="30" y="75" width="200" height="30" rx="6"/><text x="130" y="95" text-anchor="middle" class="lbl">Segunda línea</text>
+            <rect class="box-accent" x="30" y="120" width="200" height="30" rx="6"/><text x="130" y="140" text-anchor="middle" class="lbl">Tercera línea</text>
+          </svg>
+        </div>
+      </div>
+      <p class="foot-note"><code>verticalArrangement</code> y <code>horizontalAlignment</code> controlan cómo se distribuyen y alinean los hijos.</p>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="slide">
+    <div class="kicker">02 · Componentes de estructura</div>
+    <h2 class="title"><em>Row</em>: colocar en horizontal</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Row</span>
+          </div>
+          <div class="term-body">Row {
+    Icon(Icons.Default.Star,
+        contentDescription = <span class="g">null</span>)
+    Text(<span class="a">"Favorito"</span>)
+}<span class="cursor"></span></div>
+        </div>
+        <div class="svg-card">
+          <svg viewBox="0 0 260 100" xmlns="http://www.w3.org/2000/svg">
+            <rect class="box" x="10" y="10" width="240" height="80" rx="10"/>
+            <circle class="commit-a" cx="55" cy="50" r="14"/><text x="55" y="55" text-anchor="middle" class="lbl-strong">★</text>
+            <rect class="box-accent" x="90" y="35" width="130" height="30" rx="6"/><text x="155" y="55" text-anchor="middle" class="lbl">Favorito</text>
+          </svg>
+        </div>
+      </div>
+      <p class="foot-note">Mnemotécnico: <code>Column</code> apila en columna (vertical); <code>Row</code> coloca en fila (horizontal). El nombre del parámetro de arranque indica el eje que controla.</p>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section class="slide">
+    <div class="kicker">02 · Componentes de estructura</div>
+    <h2 class="title"><em>Box</em>: superponer capas</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Box</span>
+          </div>
+          <div class="term-body">Box {
+    Image(painter = imagenFondo,
+        contentDescription = <span class="g">null</span>)
+    Text(
+        text = <span class="a">"Título"</span>,
+        modifier = Modifier.align(
+            Alignment.BottomStart)
+    )
+}<span class="cursor"></span></div>
+        </div>
+        <div class="svg-card">
+          <svg viewBox="0 0 260 160" xmlns="http://www.w3.org/2000/svg">
+            <rect class="box" x="10" y="10" width="240" height="140" rx="10"/>
+            <rect class="box-accent" x="25" y="25" width="210" height="90" rx="6" opacity="0.5"/><text x="130" y="72" text-anchor="middle" class="lbl">(imagen)</text>
+            <rect class="box-accent" x="25" y="120" width="90" height="26" rx="6"/><text x="70" y="137" text-anchor="middle" class="lbl-strong">Título</text>
+          </svg>
+        </div>
+      </div>
+      <p class="foot-note">Cada hijo de un <code>Box</code> se posiciona de forma independiente con <code>Modifier.align(...)</code>, algo sin sentido en <code>Row</code> o <code>Column</code>.</p>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section class="slide">
+    <div class="kicker">02 · Componentes de estructura</div>
+    <h2 class="title">Combinando los <em>tres</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">TarjetaProducto</span>
+          </div>
+          <div class="term-body">Column {
+    Box {
+        Image(painter = imagenProducto,
+            contentDescription = <span class="g">null</span>)
+        Icon(Icons.Default.Favorite, <span class="a">"Favorito"</span>,
+            modifier = Modifier.align(
+                Alignment.TopEnd))
+    }
+    Row(horizontalArrangement =
+        Arrangement.SpaceBetween) {
+        Text(<span class="a">"Zapatillas"</span>)
+        Text(<span class="a">"49,99 €"</span>)
+    }
+}<span class="cursor"></span></div>
+        </div>
+        <div class="svg-card">
+          <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+            <rect class="box" x="10" y="10" width="280" height="180" rx="10"/>
+            <rect class="box-accent" x="25" y="25" width="250" height="110" rx="6" opacity="0.5"/>
+            <circle class="commit-b" cx="250" cy="45" r="12"/><text x="250" y="50" text-anchor="middle" class="lbl">♥</text>
+            <rect class="box" x="25" y="150" width="115" height="26" rx="6"/><text x="82" y="167" text-anchor="middle" class="lbl">Zapatillas</text>
+            <rect class="box" x="160" y="150" width="115" height="26" rx="6"/><text x="217" y="167" text-anchor="middle" class="lbl">49,99 €</text>
+          </svg>
+        </div>
+      </div>
+      <p class="foot-note">La inmensa mayoría de pantallas se construyen anidando estos tres componentes de estructura.</p>
+    </div>
+  </section>
+
+  <!-- 15 -->
+  <section class="slide">
+    <div class="kicker">02 · Componentes de estructura</div>
+    <h2 class="title">Las variantes <em>Lazy</em>: listas largas</h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Problema</b><span class="d">: <code>Column</code>/<code>Row</code> componen todos sus hijos de golpe, aunque solo se vean unos pocos en pantalla.</span></span></li>
+          <li><span class="bul">→</span><span><b><code>LazyColumn</code> / <code>LazyRow</code></b><span class="d"> solo componen lo visible (o casi), y reciclan al hacer scroll — igual que <code>RecyclerView</code> frente a un <code>LinearLayout</code> con scroll.</span></span></li>
+        </ul>
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">LazyColumn</span>
+          </div>
+          <div class="term-body">LazyColumn {
+    items(listaDeProductos) { producto -&gt;
+        Text(text = producto.nombre)
+    }
+}<span class="cursor"></span></div>
+        </div>
+      </div>
+      <p class="foot-note">No se escriben los hijos directamente: se usa <code>items(...)</code>, con la lista de datos y una lambda que describe cómo dibujar un elemento.</p>
+    </div>
+  </section>
+
+  <!-- 16 -->
+  <section class="slide">
+    <div class="kicker">02 · Componentes de estructura</div>
+    <h2 class="title">¿Cuándo <em>Lazy</em> y cuándo normal?</h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Componente</th><th>Organiza en...</th><th>Compone todo de golpe</th><th>Equivalente clásico</th></tr>
+        <tr><td><code>Column</code></td><td>Vertical</td><td>Sí</td><td><code>LinearLayout</code> vertical</td></tr>
+        <tr><td><code>Row</code></td><td>Horizontal</td><td>Sí</td><td><code>LinearLayout</code> horizontal</td></tr>
+        <tr><td><code>Box</code></td><td>Superpuesto (capas)</td><td>Sí</td><td><code>FrameLayout</code></td></tr>
+        <tr><td><code>LazyColumn</code></td><td>Vertical</td><td>No (perezoso)</td><td><code>RecyclerView</code> vertical</td></tr>
+        <tr><td><code>LazyRow</code></td><td>Horizontal</td><td>No (perezoso)</td><td><code>RecyclerView</code> horizontal</td></tr>
+      </table>
+      <p class="foot-note">Regla práctica: lista fija y corta → versión normal. Colección de datos que puede crecer → versión Lazy, casi siempre.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECCIÓN 03 · COMPONENTES COMUNES ═══════════════ -->
+
+  <!-- 17 -->
+  <section class="slide">
+    <div class="kicker">03 · Componentes comunes</div>
+    <h2 class="title">Los controles <em>ya hechos</em> de Material 3</h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Catálogo amplio</b><span class="d">: botones, campos de texto, casillas, interruptores... con el aspecto de Material Design listo para usar.</span></span></li>
+        <li><span class="bul">→</span><span><b>Equivalente</b><span class="d"> a <code>Button</code>, <code>EditText</code>, <code>CheckBox</code>... del sistema de Views clásico, como funciones <code>@Composable</code>.</span></span></li>
+      </ul>
+      <p class="foot-note">Muchos de estos componentes no guardan su propio valor: hay que decirles qué mostrar y qué hacer al interactuar. El porqué (estado y recomposición) se verá más adelante — de momento basta con la forma.</p>
+    </div>
+  </section>
+
+  <!-- 18 -->
+  <section class="slide">
+    <div class="kicker">03 · Componentes comunes</div>
+    <h2 class="title"><em>Button</em> y sus variantes</h2>
+    <div class="content">
+      <div class="two-col">
+        <table class="tbl">
+          <tr><th>Variante</th><th>Peso visual</th><th>Uso típico</th></tr>
+          <tr><td><code>Button</code></td><td>Alto (relleno de color)</td><td>Acción principal de la pantalla</td></tr>
+          <tr><td><code>OutlinedButton</code></td><td>Medio (solo contorno)</td><td>Acción secundaria</td></tr>
+          <tr><td><code>TextButton</code></td><td>Bajo (solo texto)</td><td>Acción terciaria, poco intrusiva</td></tr>
+        </table>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div class="img-shot" style="flex-direction:row; justify-content:flex-start;">
+            <img src="/img/tema_3_componentes/button.png" alt="Button de Material 3">
+          </div>
+          <div class="img-shot" style="flex-direction:row; justify-content:flex-start;">
+            <img src="/img/tema_3_componentes/OutlinedButton.png" alt="OutlinedButton de Material 3">
+          </div>
+          <div class="img-shot" style="flex-direction:row; justify-content:flex-start;">
+            <img src="/img/tema_3_componentes/TextButton.png" alt="TextButton de Material 3">
+          </div>
+        </div>
+      </div>
+      <div class="term" style="margin-top:20px;">
+        <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><span class="term-label">variantes</span></div>
+        <div class="term-body">Button(onClick = {}) { Text(<span class="a">"Confirmar"</span>) }
+OutlinedButton(onClick = {}) { Text(<span class="a">"Cancelar"</span>) }
+TextButton(onClick = {}) { Text(<span class="a">"Más información"</span>) }</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18b -->
+  <section class="slide">
+    <div class="kicker">03 · Componentes comunes</div>
+    <h2 class="title">Chips y botón flotante: más ejemplos <em>Material 3</em></h2>
+    <div class="content">
+      <div class="grid cols-3">
+        <div class="img-shot">
+          <img src="/img/mockup/assist-chip.png" alt="Assist chip de Material 3">
+          <span class="shot-label">AssistChip</span>
+        </div>
+        <div class="img-shot">
+          <img src="/img/mockup/filter-chip.png" alt="Filter chip seleccionado de Material 3">
+          <span class="shot-label">FilterChip (seleccionado)</span>
+        </div>
+        <div class="img-shot">
+          <img src="/img/mockup/fab.png" alt="Botón flotante FAB de Material 3">
+          <span class="shot-label">FloatingActionButton</span>
+        </div>
+      </div>
+      <p class="foot-note">Los chips (<code>AssistChip</code>, <code>FilterChip</code>) son controles compactos de Material 3, hermanos de los botones: una acción rápida o un filtro que se activa/desactiva.</p>
+    </div>
+  </section>
+
+  <!-- 19 -->
+  <section class="slide">
+    <div class="kicker">03 · Componentes comunes</div>
+    <h2 class="title"><em>TextField</em>: entrada de texto</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">TextField</span>
+          </div>
+          <div class="term-body"><span class="g">var</span> texto by remember { mutableStateOf(<span class="a">""</span>) }
+
+TextField(
+    value = texto,
+    onValueChange = { nuevoValor -&gt;
+        texto = nuevoValor
+    },
+    label = { Text(<span class="a">"Nombre"</span>) }
+)<span class="cursor"></span></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          <ul class="list">
+            <li><span class="bul">→</span><span><b>A diferencia de <code>EditText</code></b><span class="d">, no guarda su propio texto: hay que pasarle el valor actual y qué hacer cuando cambia.</span></span></li>
+            <li><span class="bul">→</span><span><b><code>remember { mutableStateOf(...) }</code></b><span class="d">: la forma de crear un "valor que Compose recuerda entre redibujados" — el mecanismo completo se verá en la siguiente unidad.</span></span></li>
+            <li><span class="bul">→</span><span><b><code>OutlinedTextField</code></b><span class="d">: mismo comportamiento, estilo de contorno.</span></span></li>
+          </ul>
+          <div class="img-shot" style="flex-direction:row; justify-content:flex-start;">
+            <img src="/img/tema_3_componentes/TextField.png" alt="TextField de Material 3">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 20 -->
+  <section class="slide">
+    <div class="kicker">03 · Componentes comunes</div>
+    <h2 class="title">Controles de <em>selección</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="grid" style="grid-template-columns:1fr; gap:14px;">
+          <div class="card">
+            <div class="num">CHECKBOX</div>
+            <h3>Selección múltiple</h3>
+            <p>Opciones independientes entre sí: se puede marcar más de una a la vez.</p>
+          </div>
+          <div class="card">
+            <div class="num">RADIOBUTTON</div>
+            <h3>Selección única</h3>
+            <p>Mutuamente excluyentes. Compose no agrupa automáticamente: la exclusión se programa a mano.</p>
+          </div>
+          <div class="card">
+            <div class="num">SWITCH</div>
+            <h3>Encendido / apagado</h3>
+            <p>Interruptor típico de pantallas de ajustes.</p>
+          </div>
+        </div>
+        <div class="img-shot" style="flex-direction:column; gap:16px; padding:24px;">
+          <img src="/img/tema_3_componentes/checkBox.png" alt="Checkbox de Material 3 marcado">
+          <img src="/img/tema_3_componentes/RadioButton.png" alt="RadioButton de Material 3 seleccionado">
+          <img src="/img/tema_3_componentes/Switch.png" alt="Switch de Material 3 encendido">
+        </div>
+      </div>
+      <div class="term" style="margin-top:20px;">
+        <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><span class="term-label">RadioButton excluyente</span></div>
+        <div class="term-body"><span class="g">var</span> opcion by remember { mutableStateOf(<span class="a">"A"</span>) }
+RadioButton(selected = opcion == <span class="a">"A"</span>, onClick = { opcion = <span class="a">"A"</span> })
+RadioButton(selected = opcion == <span class="a">"B"</span>, onClick = { opcion = <span class="a">"B"</span> })</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 21 -->
+  <section class="slide">
+    <div class="kicker">03 · Componentes comunes</div>
+    <h2 class="title"><em>Image</em>, <em>Icon</em> y los indicadores de carga</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Image / Icon</span>
+          </div>
+          <div class="term-body">Image(
+    painter = painterResource(id = R.drawable.foto),
+    contentDescription = <span class="a">"Foto de perfil"</span>
+)
+
+Icon(
+    imageVector = Icons.Default.Favorite,
+    contentDescription = <span class="a">"Favorito"</span>,
+    tint = Color.Red
+)</div>
+        </div>
+        <ul class="list">
+          <li><span class="bul">→</span><span><b><code>Image</code></b><span class="d"> muestra un gráfico. <code>Icon</code> añade <code>tint</code> y exige <code>contentDescription</code> para accesibilidad.</span></span></li>
+          <li><span class="bul">→</span><span><b>Decorativa</b><span class="d">: pasa <code>null</code> explícito. Informativa: descripción real. Compose obliga a decidirlo.</span></span></li>
+        </ul>
+      </div>
+      <div class="grid cols-2" style="margin-top:16px;">
+        <div class="img-shot" style="flex-direction:row; justify-content:flex-start;">
+          <img src="/img/tema_3_componentes/image.png" alt="Image de Material 3">
+        </div>
+        <div class="img-shot" style="flex-direction:row; justify-content:flex-start;">
+          <img src="/img/tema_3_componentes/Icon.png" alt="Icon de Material 3">
+        </div>
+        <div class="img-shot" style="flex-direction:row; justify-content:flex-start;">
+          <img src="/img/tema_3_componentes/CircularProgress.png" alt="CircularProgressIndicator de Material 3">
+        </div>
+        <div class="img-shot" style="flex-direction:row; justify-content:flex-start;">
+          <img src="/img/tema_3_componentes/LinearProgress.png" alt="LinearProgressIndicator de Material 3">
+        </div>
+      </div>
+      <p class="foot-note"><code>CircularProgressIndicator()</code> y <code>LinearProgressIndicator(progress = { 0.6f })</code>: indicadores de carga mientras se espera una respuesta de red.</p>
+    </div>
+  </section>
+
+  <!-- 22 -->
+  <section class="slide">
+    <div class="kicker">03 · Componentes comunes</div>
+    <h2 class="title">Tabla resumen</h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Componente</th><th>Equivalente clásico</th><th>Para qué sirve</th></tr>
+        <tr><td><code>Text</code></td><td><code>TextView</code></td><td>Mostrar texto</td></tr>
+        <tr><td><code>Button</code> / <code>OutlinedButton</code> / <code>TextButton</code></td><td><code>Button</code></td><td>Acciones, con distinto peso visual</td></tr>
+        <tr><td><code>TextField</code> / <code>OutlinedTextField</code></td><td><code>EditText</code></td><td>Entrada de texto</td></tr>
+        <tr><td><code>Checkbox</code></td><td><code>CheckBox</code></td><td>Selección múltiple independiente</td></tr>
+        <tr><td><code>RadioButton</code></td><td><code>RadioButton</code></td><td>Selección única entre varias</td></tr>
+        <tr><td><code>Switch</code></td><td><code>Switch</code></td><td>Encendido / apagado</td></tr>
+        <tr><td><code>Image</code> / <code>Icon</code></td><td><code>ImageView</code></td><td>Gráficos e iconografía</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECCIÓN 04 · MATERIAL 3 ═══════════════ -->
+
+  <!-- 23 -->
+  <section class="slide">
+    <div class="kicker">04 · Material 3: sistema de color</div>
+    <h2 class="title">El <em>tema</em> como origen único de los colores</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Theme.kt</span>
+          </div>
+          <div class="term-body"><span class="g">@Composable</span>
+<span class="c">fun</span> MiAppTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: <span class="g">@Composable</span> () -&gt; Unit
+) {
+    <span class="g">val</span> colorScheme = <span class="c">if</span> (darkTheme)
+        DarkColorScheme <span class="c">else</span> LightColorScheme
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}<span class="cursor"></span></div>
+        </div>
+        <ul class="list">
+          <li><span class="bul">→</span><span><b><code>MaterialTheme</code></b><span class="d"> es un proveedor de valores: cualquier composable descendiente accede con <code>MaterialTheme.colorScheme</code>.</span></span></li>
+          <li><span class="bul">→</span><span><b>Por eso un <code>Button</code></b><span class="d"> ya sale con el color correcto: internamente pide <code>MaterialTheme.colorScheme.primary</code>.</span></span></li>
+          <li><span class="bul">→</span><span><b>Material Theme Builder</b><span class="d">: genera el esquema completo (claro/oscuro) a partir de un color de marca.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 24 -->
+  <section class="slide">
+    <div class="kicker">04 · Material 3: sistema de color</div>
+    <h2 class="title"><em>on*</em>: el color que va encima</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="svg-card">
+          <svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg">
+            <rect class="box-accent" x="10" y="10" width="280" height="120" rx="10"/>
+            <text x="150" y="55" text-anchor="middle" class="lbl">primary (fondo del botón)</text>
+            <rect class="box" x="60" y="75" width="180" height="36" rx="8"/>
+            <text x="150" y="98" text-anchor="middle" class="lbl-strong">onPrimary (el texto)</text>
+          </svg>
+        </div>
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">on-color</span>
+          </div>
+          <div class="term-body">Box(
+    modifier = Modifier.background(
+        MaterialTheme.colorScheme.primary)
+) {
+    Text(
+        text = <span class="a">"Confirmar"</span>,
+        color = MaterialTheme.colorScheme.onPrimary
+    )
+}<span class="cursor"></span></div>
+        </div>
+      </div>
+      <p class="foot-note">Cada color de fondo tiene su pareja <code>on&lt;Color&gt;</code>: el que debe usarse para lo que se dibuja encima (texto, iconos) con buen contraste. Nunca hay que tocarlo a mano al cambiar el color de marca.</p>
+    </div>
+  </section>
+
+  <!-- 25 -->
+  <section class="slide">
+    <div class="kicker">04 · Material 3: sistema de color</div>
+    <h2 class="title">Los roles <em>principales</em></h2>
+    <div class="content">
+      <table class="tbl">
+        <tr><th>Rol</th><th>Para qué se usa</th><th>Ejemplo típico</th></tr>
+        <tr><td><code>primary</code> / <code>onPrimary</code></td><td>La acción o elemento más destacado</td><td>Fondo de un Button principal, FAB</td></tr>
+        <tr><td><code>secondary</code> / <code>onSecondary</code></td><td>Elementos de apoyo, menos protagonistas</td><td>Chips seleccionados, controles secundarios</td></tr>
+        <tr><td><code>tertiary</code> / <code>onTertiary</code></td><td>Acento adicional, de contraste</td><td>Etiquetas destacadas, elementos decorativos</td></tr>
+        <tr><td><code>error</code> / <code>onError</code></td><td>Estados de error</td><td>Texto o icono de un campo con validación fallida</td></tr>
+      </table>
+      <p class="foot-note">Tres niveles de énfasis, no un único color "de marca", pensados para jerarquizar visualmente los elementos de una pantalla.</p>
+    </div>
+  </section>
+
+  <!-- 26 -->
+  <section class="slide">
+    <div class="kicker">04 · Material 3: sistema de color</div>
+    <h2 class="title">Variantes <em>Container</em> y <em>surface</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Container</span>
+          </div>
+          <div class="term-body">Card(
+    colors = CardDefaults.cardColors(
+        containerColor =
+            MaterialTheme.colorScheme
+                .primaryContainer,
+        contentColor =
+            MaterialTheme.colorScheme
+                .onPrimaryContainer
+    )
+) {
+    Text(<span class="a">"Elemento seleccionado"</span>)
+}<span class="cursor"></span></div>
+        </div>
+        <ul class="list">
+          <li><span class="bul">→</span><span><b><code>primaryContainer</code>...</b><span class="d">: versión suave y de menor contraste, para superficies grandes donde el color base sería demasiado agresivo.</span></span></li>
+          <li><span class="bul">→</span><span><b><code>surface</code> / <code>onSurface</code></b><span class="d">: fondo neutro por defecto de pantallas y tarjetas.</span></span></li>
+          <li><span class="bul">→</span><span><b><code>surfaceVariant</code></b><span class="d">, <code>background</code>, <code>outline</code>: variaciones sutiles y bordes.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 27 -->
+  <section class="slide">
+    <div class="kicker">04 · Material 3: sistema de color</div>
+    <h2 class="title">Cómo elegir el <em>color correcto</em></h2>
+    <div class="content" style="justify-content:center;">
+      <table class="tbl">
+        <tr><th>Pregunta</th><th>Color a usar</th></tr>
+        <tr><td>¿Fondo neutro por defecto de pantalla o tarjeta?</td><td><code>surface</code>, <code>background</code></td></tr>
+        <tr><td>¿Texto o icono dibujado sobre ese fondo neutro?</td><td><code>onSurface</code></td></tr>
+        <tr><td>¿Es la acción más importante de la pantalla?</td><td><code>primary</code></td></tr>
+        <tr><td>¿Texto/icono encima de un color X?</td><td><code>onX</code></td></tr>
+        <tr><td>¿La misma idea en una superficie grande y suave?</td><td><code>XContainer</code></td></tr>
+        <tr><td>¿Un estado de error?</td><td><code>error</code> / <code>onError</code></td></tr>
+      </table>
+      <p class="foot-note">Casi nunca hace falta escribir un color a mano (<code>Color(0xFF...)</code>): se usa el rol del <code>colorScheme</code> que corresponda, y toda la app cambia de aspecto con solo tocar el tema una vez.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECCIÓN 05 · SCAFFOLD ═══════════════ -->
+
+  <!-- 28 -->
+  <section class="slide">
+    <div class="kicker">05 · Scaffold</div>
+    <h2 class="title">El esqueleto <em>completo</em> de pantalla</h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">Scaffold</span>
+          </div>
+          <div class="term-body">Scaffold(
+    topBar = { <span class="c">/* barra superior */</span> },
+    bottomBar = { <span class="c">/* barra inferior */</span> },
+    floatingActionButton = { <span class="c">/* FAB */</span> },
+    snackbarHost = { <span class="c">/* avisos */</span> }
+) { paddingValues -&gt;
+    Column(modifier =
+        Modifier.padding(paddingValues)) {
+        Text(<span class="a">"Contenido de la pantalla"</span>)
+    }
+}<span class="cursor"></span></div>
+        </div>
+        <div class="svg-card">
+          <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+            <rect class="box-accent" x="10" y="10" width="240" height="30" rx="6"/><text x="130" y="30" text-anchor="middle" class="lbl-strong">topBar</text>
+            <rect class="box" x="10" y="45" width="240" height="120" rx="6"/><text x="130" y="108" text-anchor="middle" class="lbl">contenido</text>
+            <circle class="commit-a" cx="220" cy="150" r="14"/><text x="220" y="155" text-anchor="middle" class="lbl">FAB</text>
+            <rect class="box-accent" x="10" y="170" width="240" height="30" rx="6"/><text x="130" y="190" text-anchor="middle" class="lbl-strong">bottomBar</text>
+          </svg>
+        </div>
+      </div>
+      <p class="foot-note"><code>Scaffold</code> recibe zonas con nombre y, como trailing lambda, el contenido — que recibe <code>paddingValues</code>, el espacio a respetar para no invadir las barras.</p>
+    </div>
+  </section>
+
+  <!-- 29 -->
+  <section class="slide">
+    <div class="kicker">05 · Scaffold</div>
+    <h2 class="title">Aplicar siempre el <em>paddingValues</em></h2>
+    <div class="content" style="justify-content:center;">
+      <ul class="list">
+        <li><span class="bul">→</span><span><b>Error más común</b><span class="d"> al empezar a usar <code>Scaffold</code>: olvidar <code>Modifier.padding(paddingValues)</code> en el contenido.</span></span></li>
+        <li><span class="bul">→</span><span><b>Consecuencia</b><span class="d">: el contenido queda dibujado por debajo de la barra superior o por encima de la inferior, tapado y no accesible.</span></span></li>
+      </ul>
+      <div class="badge err" style="margin-top:12px;">✗ contenido tapado sin paddingValues</div>
+    </div>
+  </section>
+
+  <!-- 30 -->
+  <section class="slide">
+    <div class="kicker">05 · Scaffold</div>
+    <h2 class="title"><em>topBar</em> y <em>bottomBar</em></h2>
+    <div class="content">
+      <div class="grid cols-2">
+        <div class="card">
+          <div class="num">TOPBAR</div>
+          <h3>TopAppBar</h3>
+          <p>Título, icono de navegación (menú o atrás) y acciones a la derecha.</p>
+        </div>
+        <div class="card">
+          <div class="num">BOTTOMBAR</div>
+          <h3>NavigationBar</h3>
+          <p>Varias secciones principales entre las que el usuario cambia constantemente, con <code>NavigationBarItem</code>.</p>
+        </div>
+      </div>
+      <div class="term" style="margin-top:20px;">
+        <div class="term-bar"><div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div><span class="term-label">NavigationBar</span></div>
+        <div class="term-body">NavigationBar {
+    NavigationBarItem(
+        selected = pantallaActual == <span class="a">"inicio"</span>,
+        onClick = { pantallaActual = <span class="a">"inicio"</span> },
+        icon = { Icon(Icons.Default.Home, <span class="g">null</span>) },
+        label = { Text(<span class="a">"Inicio"</span>) }
+    )
+}</div>
+      </div>
+      <p class="foot-note">Esto todavía no es navegación de verdad: cambiar una variable de estado basta para practicar la forma. El Navigation Component real se trabaja en la unidad 3.</p>
+    </div>
+  </section>
+
+  <!-- 31 -->
+  <section class="slide">
+    <div class="kicker">05 · Scaffold</div>
+    <h2 class="title">El menú lateral: <em>ModalNavigationDrawer</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>Cuando hay demasiadas secciones</b><span class="d"> para una barra inferior, o se prefiere otro patrón: un menú que se desliza desde el borde.</span></span></li>
+          <li><span class="bul">→</span><span><b>No es un parámetro de <code>Scaffold</code></b><span class="d">: es un composable que <b>envuelve</b> a todo el <code>Scaffold</code>.</span></span></li>
+          <li><span class="bul">→</span><span><b>El icono "hamburguesa"</b><span class="d"> en <code>navigationIcon</code> del <code>topBar</code> es, típicamente, el que dispara su apertura.</span></span></li>
+        </ul>
+        <div class="svg-card">
+          <svg viewBox="0 0 280 180" xmlns="http://www.w3.org/2000/svg">
+            <rect class="box-accent" x="10" y="10" width="80" height="160" rx="8"/><text x="50" y="35" text-anchor="middle" class="lbl-strong">Menú</text>
+            <text x="50" y="65" text-anchor="middle" class="lbl">Ajustes</text>
+            <text x="50" y="85" text-anchor="middle" class="lbl">Perfil</text>
+            <text x="50" y="105" text-anchor="middle" class="lbl">Salir</text>
+            <rect class="box" x="100" y="10" width="170" height="30" rx="6"/><text x="185" y="30" text-anchor="middle" class="lbl">☰ Mi aplicación</text>
+            <rect class="box" x="100" y="48" width="170" height="122" rx="6"/><text x="185" y="112" text-anchor="middle" class="lbl">contenido</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 32 -->
+  <section class="slide">
+    <div class="kicker">05 · Scaffold</div>
+    <h2 class="title"><em>floatingActionButton</em> y <em>snackbarHost</em></h2>
+    <div class="content">
+      <div class="two-col">
+        <div class="term">
+          <div class="term-bar">
+            <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+            <span class="term-label">FAB + Snackbar</span>
+          </div>
+          <div class="term-body"><span class="g">val</span> snackbarHostState = remember { SnackbarHostState() }
+<span class="g">val</span> scope = rememberCoroutineScope()
+
+Scaffold(
+    snackbarHost = { SnackbarHost(snackbarHostState) },
+    floatingActionButton = {
+        FloatingActionButton(onClick = {
+            scope.launch {
+                snackbarHostState.showSnackbar(
+                    <span class="a">"Elemento añadido"</span>)
+            }
+        }) { Icon(Icons.Default.Add, <span class="a">"Añadir"</span>) }
+    }
+) { padding -&gt; <span class="c">/* ... */</span> }</div>
+        </div>
+        <ul class="list">
+          <li><span class="bul">→</span><span><b>FAB</b><span class="d">: la acción más importante de la pantalla. Como mucho uno por pantalla.</span></span></li>
+          <li><span class="bul">→</span><span><b>Snackbar</b><span class="d">: aviso breve que aparece y desaparece solo. Necesita un <code>SnackbarHostState</code>.</span></span></li>
+          <li><span class="bul">→</span><span><b>Corrutinas</b><span class="d">: mostrar un snackbar espera un tiempo, por eso se lanza con <code>scope.launch</code> — se dan por sabidas aquí, se detallan más adelante.</span></span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 33 -->
+  <section class="slide">
+    <div class="kicker">05 · Scaffold</div>
+    <h2 class="title">Todas las piezas <em>juntas</em>: jerarquía</h2>
+    <div class="content" style="justify-content:center;">
+      <div class="svg-card">
+        <svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowheadS33" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+              <path d="M0,0 L10,4 L0,8 Z" fill="var(--text-faint)"/>
+            </marker>
+          </defs>
+
+          <rect class="box" x="190" y="10" width="300" height="40" rx="8"/><text x="340" y="34" text-anchor="middle" class="lbl-strong">ModalNavigationDrawer (opcional)</text>
+          <path class="arrow" d="M340,50 V75" marker-end="url(#arrowheadS33)"/>
+
+          <rect class="box-accent" x="250" y="78" width="180" height="40" rx="8"/><text x="340" y="102" text-anchor="middle" class="lbl-strong">Scaffold</text>
+
+          <path class="arrow" d="M300,118 L70,155" marker-end="url(#arrowheadS33)"/>
+          <path class="arrow" d="M320,118 L200,155" marker-end="url(#arrowheadS33)"/>
+          <path class="arrow" d="M340,118 L340,155" marker-end="url(#arrowheadS33)"/>
+          <path class="arrow" d="M360,118 L480,155" marker-end="url(#arrowheadS33)"/>
+          <path class="arrow" d="M380,118 L610,155" marker-end="url(#arrowheadS33)"/>
+
+          <rect class="box" x="10" y="158" width="120" height="70" rx="6"/><text x="70" y="188" text-anchor="middle" class="lbl">topBar</text><text x="70" y="206" text-anchor="middle" class="lbl-strong" style="font-size:11px;">TopAppBar</text>
+          <rect class="box" x="140" y="158" width="120" height="70" rx="6"/><text x="200" y="188" text-anchor="middle" class="lbl">bottomBar</text><text x="200" y="206" text-anchor="middle" class="lbl-strong" style="font-size:11px;">NavigationBar</text>
+          <rect class="box" x="280" y="158" width="120" height="70" rx="6"/><text x="340" y="188" text-anchor="middle" class="lbl">floatingAction-</text><text x="340" y="203" text-anchor="middle" class="lbl">Button</text><text x="340" y="219" text-anchor="middle" class="lbl-strong" style="font-size:11px;">FAB</text>
+          <rect class="box" x="420" y="158" width="120" height="70" rx="6"/><text x="480" y="188" text-anchor="middle" class="lbl">snackbarHost</text><text x="480" y="206" text-anchor="middle" class="lbl-strong" style="font-size:11px;">SnackbarHost</text>
+          <rect class="box-accent" x="550" y="158" width="120" height="70" rx="6"/><text x="610" y="185" text-anchor="middle" class="lbl-strong">content</text><text x="610" y="202" text-anchor="middle" class="lbl" style="font-size:11px;">(paddingValues)</text>
+        </svg>
+      </div>
+      <p class="foot-note">El menú lateral envuelve al <code>Scaffold</code>; dentro, cada zona es un parámetro con nombre, y el contenido llega como trailing lambda con el padding a respetar.</p>
+    </div>
+  </section>
+
+  <!-- 33b -->
+  <section class="slide">
+    <div class="kicker">05 · Scaffold</div>
+    <h2 class="title">Todas las piezas <em>juntas</em>: resumen</h2>
+    <div class="content" style="justify-content:center;">
+      <table class="tbl">
+        <tr><th>Parte</th><th>Composable típico</th><th>Para qué sirve</th></tr>
+        <tr><td><code>topBar</code></td><td><code>TopAppBar</code></td><td>Título, navegación hacia atrás, acciones</td></tr>
+        <tr><td><code>bottomBar</code></td><td><code>NavigationBar</code></td><td>Cambiar entre secciones principales</td></tr>
+        <tr><td><code>floatingActionButton</code></td><td><code>FloatingActionButton</code></td><td>La acción destacada de la pantalla</td></tr>
+        <tr><td><code>snackbarHost</code></td><td><code>SnackbarHost</code></td><td>Avisos breves y temporales</td></tr>
+        <tr><td>Menú lateral</td><td><code>ModalNavigationDrawer</code></td><td>Navegación con muchas opciones, envuelve al <code>Scaffold</code></td></tr>
+        <tr><td>contenido</td><td><code>Column</code>, <code>LazyColumn</code>...</td><td>El cuerpo real de la pantalla</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 34. ACTIVIDADES -->
+  <section class="slide">
+    <div class="kicker">Actividades del tema</div>
+    <h2 class="title">De la <em>teoría</em> a la práctica</h2>
+    <div class="content">
+      <ul class="list">
+        <li><span class="bul exnum">A3.1</span><span><b>Primeros composables</b><span class="d"> — <code>TarjetaContacto</code> propio (nombre, teléfono, imagen) combinando Row, Column e Image; úsalo varias veces en una agenda.</span></span></li>
+        <li><span class="bul exnum">A3.2</span><span><b>Estructura de listado</b><span class="d"> — catálogo de 30+ elementos con <code>LazyColumn</code> y una <code>LazyRow</code> de categorías arriba.</span></span></li>
+        <li><span class="bul exnum">A3.3</span><span><b>Formulario con controles</b><span class="d"> — TextFields, Checkbox/Switch, RadioButtons excluyentes, Button + TextButton.</span></span></li>
+        <li><span class="bul exnum">A3.4</span><span><b>Pantalla completa con Scaffold</b><span class="d"> — TopAppBar, NavigationBar, FAB y Snackbar de confirmación sobre el Proyecto A.</span></span></li>
+      </ul>
+      <p class="foot-note">Por cada actividad: un ADR en <code>docs/</code> (<code>0301.md</code>, <code>0302.md</code>...) explicando qué composables se usaron y por qué. Criterios de evaluación: 2a, 2b.</p>
+    </div>
+  </section>
+
+  <!-- 35. CIERRE -->
+  <section class="slide">
+    <div class="content" style="justify-content:center; align-items:flex-start;">
+      <div class="kicker">PMDM · Tema 3</div>
+      <h1 class="big">Describe <em>el qué</em>, no <em>el cómo</em></h1>
+      <p class="subtitle">Composables, estructura, controles, color y Scaffold son las piezas; combinarlas bien es ya saber construir cualquier pantalla de Compose.</p>
+    </div>
+  </section>
+
+</div>
+
+<button class="nav-btn prev" id="prevBtn" aria-label="Anterior">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+</button>
+<button class="nav-btn next" id="nextBtn" aria-label="Siguiente">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+</button>
+
+<div style="position:fixed; bottom:0; left:0; right:0; padding: 0 72px 20px;">
+  <div class="deck-foot">
+    <span id="slideLabel">01 / 01</span>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <span>PMDM · Tema 3</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  var slides = document.querySelectorAll('.slide');
+  var total = slides.length;
+  var idx = 0;
+
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+  function render(){
+    slides.forEach(function(s, i){ s.classList.toggle('active', i === idx); });
+    document.getElementById('slideLabel').textContent = pad(idx+1) + ' / ' + pad(total);
+    document.getElementById('progressBar').style.width = ((idx+1)/total*100) + '%';
+  }
+
+  function go(delta){
+    idx = Math.max(0, Math.min(total - 1, idx + delta));
+    render();
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', function(){ go(1); });
+  document.getElementById('prevBtn').addEventListener('click', function(){ go(-1); });
+
+  window.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown'){ go(1); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp'){ go(-1); e.preventDefault(); }
+    else if (e.key === 'Home'){ idx = 0; render(); }
+    else if (e.key === 'End'){ idx = total - 1; render(); }
+  });
+
+  var touchStartX = null;
+  window.addEventListener('touchstart', function(e){ touchStartX = e.touches[0].clientX; });
+  window.addEventListener('touchend', function(e){
+    if (touchStartX === null) return;
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50){ go(dx < 0 ? 1 : -1); }
+    touchStartX = null;
+  });
+
+  render();
+})();
+</script>

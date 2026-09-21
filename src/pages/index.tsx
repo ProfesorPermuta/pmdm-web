@@ -51,6 +51,7 @@ const TEMAS: Tema[] = [
       {label: 'Componentes de estructura', href: '/tema-3/b-componentes-estructura'},
       {label: 'Componentes comunes', href: '/tema-3/c-componentes-comunes'},
       {label: 'Scaffold', href: '/tema-3/d-scaffold'},
+      {label: 'Leer un mockup: catálogo de apps', href: '/tema-3/f-mockup-catalogo-apps'},
       {label: 'Actividades', href: '/tema-3/e-actividades'},
     ],
   },

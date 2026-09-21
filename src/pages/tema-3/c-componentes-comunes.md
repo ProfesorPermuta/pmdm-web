@@ -186,6 +186,6 @@ LinearProgressIndicator(progress = { 0.6f })
 | `Image` / `Icon` | `ImageView` | Gráficos e iconografía |
 | `CircularProgressIndicator` | `ProgressBar` | Indicar carga en curso |
 
-<NextPageButton to="/tema-3/d-scaffold">
-Scaffold: la estructura completa de una pantalla
+<NextPageButton to="/tema-3/g-material3-theming">
+Material 3: el sistema de color detrás de los componentes
 </NextPageButton>

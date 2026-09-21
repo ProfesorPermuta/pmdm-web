@@ -242,6 +242,6 @@ flowchart TD
 | `snackbarHost` | `SnackbarHost` | Avisos breves y temporales |
 | contenido | lo que se quiera (`Column`, `LazyColumn`...) | El cuerpo real de la pantalla |
 
-<NextPageButton to="/tema-3/e-actividades">
-Actividades del tema 3
+<NextPageButton to="/tema-3/f-mockup-catalogo-apps">
+Leer un mockup: catálogo de aplicaciones
 </NextPageButton>

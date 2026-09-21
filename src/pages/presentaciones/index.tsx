@@ -23,6 +23,12 @@ const PRESENTACIONES: Presentacion[] = [
     color: '#10b981',
     href: '/presentaciones/tema-2.html',
   },
+  {
+    n: 3,
+    title: 'Jetpack Compose: interfaces declarativas',
+    color: '#10b981',
+    href: '/presentaciones/tema-3.html',
+  },
 ];
 
 /* ─── Tarjeta de presentación ───────────────────────────────── */
