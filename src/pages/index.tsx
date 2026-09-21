@@ -42,6 +42,18 @@ const TEMAS: Tema[] = [
       {label: 'Actividades', href: '/tema-2/e-actividades'},
     ],
   },
+  {
+    n: 3,
+    title: 'Diseño y programación de interfaces con Jetpack Compose',
+    color: '#10b981',
+    pages: [
+      {label: 'Composables y su invocación', href: '/tema-3/a-composables-y-invocacion'},
+      {label: 'Componentes de estructura', href: '/tema-3/b-componentes-estructura'},
+      {label: 'Componentes comunes', href: '/tema-3/c-componentes-comunes'},
+      {label: 'Scaffold', href: '/tema-3/d-scaffold'},
+      {label: 'Actividades', href: '/tema-3/e-actividades'},
+    ],
+  },
 ];
 
 /* ─── Tarjeta de tema ───────────────────────────────────────── */

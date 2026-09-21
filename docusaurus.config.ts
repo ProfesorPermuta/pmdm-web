@@ -82,6 +82,10 @@ const config: Config = {
               label: 'Tema 2 — Componentes y ciclo de vida',
               to: '/tema-2/a-componentes-android',
             },
+            {
+              label: 'Tema 3 — Interfaces con Jetpack Compose',
+              to: '/tema-3/a-composables-y-invocacion',
+            },
           ],
         },
         {to: '/tema-1/f-plantilla-proyecto', label: 'Proyecto A', position: 'left'},
