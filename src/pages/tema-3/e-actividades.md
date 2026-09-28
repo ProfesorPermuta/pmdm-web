@@ -26,40 +26,40 @@ Respuesta a la pregunta
 
 ---
 
-## A3.1 · Primeros composables
+## A3.1 · Tarjeta de reseña
 
-**Objetivo:** practicar la invocación de composables y la diferencia entre parámetros y contenido (*trailing lambda*).
+**Objetivo:** practicar la invocación de composables y la diferencia entre parámetros y contenido (*trailing lambda*), reproduciendo un elemento del mockup del catálogo de aplicaciones.
 
-Crea una función `@Composable` propia, `TarjetaContacto`, que reciba nombre, teléfono y una imagen, y que muestre esa información combinando `Row`, `Column` e `Image`. Después, úsala varias veces dentro de una `Column` para mostrar una pequeña agenda de 4 o 5 contactos.
-
-**Criterios de evaluación:** 2a, 2b.
-
----
-
-## A3.2 · Estructura de una pantalla de listado
-
-**Objetivo:** elegir el componente de estructura adecuado según el volumen de datos.
-
-Construye una pantalla que muestre un catálogo de al menos 30 elementos (pueden ser inventados: productos, películas, canciones...) usando `LazyColumn`. Cada elemento debe mostrarse con una fila (`Row`) que combine una imagen o icono, un `Column` con dos líneas de texto, y esté correctamente organizado.
-
-Añade, además, una `LazyRow` en la parte superior con categorías o filtros de ejemplo.
-
-**Entrega:** capturas de pantalla del resultado, y una explicación de por qué se ha elegido `LazyColumn` y no `Column` para el listado principal.
+Crea una función `@Composable` propia, `FilaResenya`, que reproduzca la ["Fila de reseña"](/tema-3/f-mockup-catalogo-apps#fila-de-reseña) del mockup: un avatar circular, el nombre del usuario y su comentario a la izquierda (combinando `Row` y `Column`), y la valoración a la derecha. Después, úsala varias veces dentro de una `Column` para mostrar 4 o 5 reseñas de ejemplo.
 
 **Criterios de evaluación:** 2a, 2b.
 
 ---
 
-## A3.3 · Formulario con controles
+## A3.2 · Listado con LazyColumn
+
+**Objetivo:** elegir el componente de estructura adecuado según el volumen de datos, reproduciendo otro elemento del mockup.
+
+Crea una función `@Composable` propia, `FilaListadoInstall`, que reproduzca la ["Fila de listado con acción"](/tema-3/f-mockup-catalogo-apps#fila-de-listado-con-acción) del mockup: icono a la izquierda, dos líneas de texto en el centro (nombre y categoría/valoración) y un botón de acción ("Install") a la derecha.
+
+Después, muéstrala dentro de una `LazyColumn` con al menos 30 elementos (pueden ser inventados).
+
+**Entrega:** capturas de pantalla del resultado, y una explicación de por qué se ha elegido `LazyColumn` y no `Column` para este listado.
+
+**Criterios de evaluación:** 2a, 2b.
+
+---
+
+## A3.3 · Formulario de nuevo usuario
 
 **Objetivo:** practicar los componentes comunes de entrada de datos.
 
-Diseña una pantalla de "Nuevo registro" (puede ser de cualquier dominio: un usuario, un producto, una reserva...) que use, como mínimo:
+Diseña una pantalla de "Nuevo usuario" que use, como mínimo:
 
-- Dos `TextField` (o `OutlinedTextField`).
-- Un `Checkbox` o un `Switch`.
-- Un grupo de `RadioButton` con al menos tres opciones mutuamente excluyentes.
-- Un `Button` de acción principal y un `TextButton` de cancelar.
+- Dos `TextField` (o `OutlinedTextField`), por ejemplo para nombre y correo electrónico.
+- Un `Checkbox` o un `Switch`, por ejemplo para aceptar condiciones o recibir notificaciones.
+- Un grupo de `RadioButton` con al menos tres opciones mutuamente excluyentes, por ejemplo un rol o tipo de cuenta.
+- Un `Button` de acción principal ("Registrar") y un `TextButton` de cancelar.
 
 No hace falta que el formulario haga nada al enviarse (eso se trabajará en la unidad de estado); basta con que la interfaz esté bien organizada y sea usable.
 
