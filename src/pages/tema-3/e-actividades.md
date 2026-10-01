@@ -87,6 +87,51 @@ Recuerda aplicar el `paddingValues` que `Scaffold` proporciona al contenido, par
 
 **Criterios de evaluación:** 2a, 2b.
 
+---
+
+## A3.5 · Análisis de componentes del mockup del Proyecto A
+
+**Objetivo:** aprender a *leer* un mockup antes de programarlo, descomponiendo cada pantalla en componentes reutilizables y en las piezas de estructura que los forman, tal y como se hizo en el [mockup del catálogo de aplicaciones](/tema-3/f-mockup-catalogo-apps).
+
+Con el mockup de tu Proyecto A (el de la propuesta del tema 1) abierto en **Figma** o **Canva**, haz un análisis visual de componentes siguiendo este método:
+
+1. **Una lámina por pantalla.** Coloca la pantalla completa a la izquierda con su nombre en formato de composable (por ejemplo, `PaginaMisJuegos`).
+2. **Un recorte por cada componente repetido o relevante.** Al lado de la pantalla, copia el recorte de cada componente y ponle nombre en `PascalCase` (por ejemplo, `TarjetaVertical`, `TarjetaHorizontal`, `Buscador`).
+3. **Marca la estructura con una leyenda de colores.** Dibuja sobre cada recorte rectángulos de contorno, siempre con el mismo código de color, e incluye la leyenda en la lámina:
+
+   | Color | Contenedor |
+   |-------|------------|
+   | Rojo | `Column` |
+   | Verde | `Row` |
+   | Morado | `Box` |
+
+4. **Etiqueta los componentes hoja.** Los elementos que ya no se descomponen más (`Image`, `Text`, `ProgressBar`, `Button`, `Icon`…) se marcan con una etiqueta o con un contorno amarillo.
+5. **Respeta la anidación.** Si un `Row` contiene una `Column` que a su vez contiene otro `Row` (como en la tarjeta horizontal: imagen + columna con título y fila de categoría/valoración + botón), los rectángulos deben reflejar esa jerarquía.
+
+:::tip
+Pregúntate en cada recorte
+¿Qué contenedor coloca a sus hijos en vertical, en horizontal o apilados? ¿Qué parte cambia según los datos (parámetros del composable) y qué parte es fija?
+:::
+
+**Entrega:** exporta la lámina como imagen (PNG) o PDF e inclúyela en el ADR, junto con una tabla con, para cada componente: nombre, contenedores que lo forman, componentes hoja y parámetros que recibiría.
+
+**Criterios de evaluación:** 2a, 2b.
+
+---
+
+## A3.6 · Componentes y páginas del Proyecto A en Compose
+
+**Objetivo:** convertir el análisis de A3.5 en código, generando los componentes y las páginas del mockup del Proyecto A.
+
+1. **Componentes.** Crea un `@Composable` por cada componente identificado en A3.5, con los datos como parámetros (nada de textos o imágenes escritos a fuego dentro) y un `modifier` opcional. Agrúpalos en un paquete `ui/components`. Cada componente debe tener su `@Preview`.
+2. **Páginas.** Crea un `@Composable` por cada pantalla del mockup (por ejemplo, `PaginaMisJuegos`) en un paquete `ui/pages` (o `ui/screens`), que **componga** los componentes anteriores con datos de ejemplo. Usa `Scaffold` si la pantalla tiene barra superior, inferior o FAB, y `LazyColumn`/`LazyRow` para los listados.
+3. **Fidelidad.** Compara el resultado con el mockup lado a lado: estructura, espaciados, jerarquía de textos y colores deben ser reconocibles. No se pide navegación entre pantallas ni lógica; eso llegará en unidades posteriores.
+4. Intenta **hacer todos los posibles**, si falta alguno de los elementos de los mockups se podrán hacer más adelante, pero cuanto más avances ahora menos trabajo quedará para despues. Como mínimo deberías tener 3 componentes y 2 páginas montadas al finalizar la actividad.
+
+**Entrega:** código en el repositorio del Proyecto A y una captura de cada página junto a su mockup original.
+
+**Criterios de evaluación:** 2a, 2b.
+
 <NextPageButton to="/tema-3/a-composables-y-invocacion">
 Volver al inicio del tema 3
 </NextPageButton>
