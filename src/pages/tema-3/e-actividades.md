@@ -104,6 +104,8 @@ Con el mockup de tu Proyecto A (el de la propuesta del tema 1) abierto en **Figm
    | Rojo | `Column` |
    | Verde | `Row` |
    | Morado | `Box` |
+   | Naranja | `LazyColumn`|
+   | Azul | `LazyRow` |
 
 4. **Etiqueta los componentes hoja.** Los elementos que ya no se descomponen más (`Image`, `Text`, `ProgressBar`, `Button`, `Icon`…) se marcan con una etiqueta o con un contorno amarillo.
 5. **Respeta la anidación.** Si un `Row` contiene una `Column` que a su vez contiene otro `Row` (como en la tarjeta horizontal: imagen + columna con título y fila de categoría/valoración + botón), los rectángulos deben reflejar esa jerarquía.
