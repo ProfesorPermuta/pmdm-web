@@ -145,6 +145,6 @@ flowchart TD
 
 En la práctica, casi nunca hace falta escribir un color "a mano" (`Color(0xFF...)`) dentro de un composable: se usa el rol de `MaterialTheme.colorScheme` que corresponda, y así toda la app cambia de aspecto (incluido el modo oscuro) con solo tocar el tema una vez.
 
-<NextPageButton to="/tema-3/d-scaffold">
-Scaffold: la estructura completa de una pantalla
+<NextPageButton to="/tema-3/h-mvvm-y-remember">
+MVVM y remember: dónde vive el estado de la interfaz
 </NextPageButton>

@@ -72,7 +72,7 @@ TextField(
 
 :::note
 `remember` y `mutableStateOf` no se explican todavía
-Esta línea aparece aquí porque un `TextField` no funciona sin algo que recuerde lo que el usuario ha escrito. `remember { mutableStateOf(...) }` es la forma de crear ese "valor que Compose recuerda entre redibujados". El mecanismo completo de estado y recomposición es el tema de la siguiente unidad; de momento basta con copiar este patrón cuando haga falta un campo de texto editable.
+Esta línea aparece aquí porque un `TextField` no funciona sin algo que recuerde lo que el usuario ha escrito. `remember { mutableStateOf(...) }` es la forma de crear ese "valor que Compose recuerda entre redibujados". El mecanismo completo de estado y recomposición se explica en [MVVM y remember](/tema-3/h-mvvm-y-remember); de momento basta con copiar este patrón cuando haga falta un campo de texto editable.
 :::
 
 También existe `OutlinedTextField`, con el mismo comportamiento pero con el estilo de contorno en vez de relleno, igual que ocurre entre `Button` y `OutlinedButton`.

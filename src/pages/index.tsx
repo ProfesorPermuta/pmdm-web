@@ -50,9 +50,12 @@ const TEMAS: Tema[] = [
       {label: 'Composables y su invocación', href: '/tema-3/a-composables-y-invocacion'},
       {label: 'Componentes de estructura', href: '/tema-3/b-componentes-estructura'},
       {label: 'Componentes comunes', href: '/tema-3/c-componentes-comunes'},
+      {label: 'Material 3: el sistema de color', href: '/tema-3/g-material3-theming'},
+      {label: 'MVVM y remember', href: '/tema-3/h-mvvm-y-remember'},
       {label: 'Scaffold', href: '/tema-3/d-scaffold'},
       {label: 'Leer un mockup: catálogo de apps', href: '/tema-3/f-mockup-catalogo-apps'},
       {label: 'Actividades', href: '/tema-3/e-actividades'},
+      {label: 'Enlaces de interés', href: '/tema-3/i-enlaces-de-interes'},
     ],
   },
 ];
