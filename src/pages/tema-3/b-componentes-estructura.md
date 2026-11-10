@@ -20,13 +20,9 @@ Column {
 }
 ```
 
-```
-┌─────────────────────┐
-│ Primera línea        │
-│ Segunda línea         │
-│ Tercera línea          │
-└─────────────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/column.svg" alt="Column coloca tres líneas de texto una debajo de otra" style={{maxWidth: '470px', width: '100%'}} />
+</div>
 
 Los parámetros `verticalArrangement` y `horizontalAlignment` controlan cómo se distribuyen y alinean los hijos dentro del espacio disponible:
 
@@ -53,11 +49,9 @@ Row {
 }
 ```
 
-```
-┌───────────────────────┐
-│ [★]  Favorito           │
-└───────────────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/row.svg" alt="Row coloca un icono de estrella y el texto Favorito uno al lado del otro" style={{maxWidth: '370px', width: '100%'}} />
+</div>
 
 Igual que `Column`, admite `horizontalArrangement` (cómo se reparte el espacio horizontal: al inicio, centrado, con huecos iguales...) y `verticalAlignment` (cómo se alinean verticalmente los hijos, que pueden tener alturas distintas).
 
@@ -82,14 +76,9 @@ Box {
 }
 ```
 
-```
-┌───────────────────────┐
-│                        │
-│      (imagen)          │
-│                        │
-│ Título                 │
-└───────────────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/box.svg" alt="Box superpone una imagen de fondo y el texto Título en la esquina inferior izquierda" style={{maxWidth: '560px', width: '100%'}} />
+</div>
 
 Cada hijo de un `Box` puede posicionarse de forma independiente con `Modifier.align(...)`, algo que no tiene sentido en `Row` o `Column` (donde los hijos se colocan en secuencia, uno tras otro).
 
@@ -158,11 +147,9 @@ LazyRow {
 }
 ```
 
-```
-┌─────────────────────────────────────┐
-│ [Deportes] [Ropa] [Hogar] [Libros] → │  (scroll horizontal)
-└─────────────────────────────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/lazyrow.svg" alt="LazyRow: fila de etiquetas que se desplaza horizontalmente" style={{maxWidth: '440px', width: '100%'}} />
+</div>
 
 :::note
 ¿Cuándo usar la versión *Lazy* y cuándo la normal?

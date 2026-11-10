@@ -41,12 +41,9 @@ TextButton(onClick = { /* acción terciaria */ }) {
 }
 ```
 
-```
-┌───────────┐   ┌───────────┐    
-│ Confirmar │   │ Cancelar  │    Más información
-└───────────┘   └╌╌╌╌╌╌╌╌╌╌╌┘
-  (relleno)       (contorno)        (solo texto)
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/botones.svg" alt="Button relleno, OutlinedButton con contorno y TextButton solo texto" style={{maxWidth: '540px', width: '100%'}} />
+</div>
 
 | Variante | Peso visual | Uso típico |
 |---|---|---|

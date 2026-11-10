@@ -53,13 +53,9 @@ Escribir un `ColorScheme` completo (más de 20 colores, con sus variantes claro/
 
 El patrón más importante para entender la paleta es el prefijo `on`. Cada color de fondo tiene su pareja `on<Color>`, que es **el color que debe usarse para lo que se dibuja encima de él** (texto, iconos) de forma que se lea con buen contraste:
 
-```
-┌─────────────────────────────┐
-│  primary (fondo del botón)   │
-│                                │
-│      onPrimary (el texto)     │
-└─────────────────────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/on-primary.svg" alt="Fondo primary con el texto en onPrimary encima" style={{maxWidth: '340px', width: '100%'}} />
+</div>
 
 ```kotlin
 Box(

@@ -24,19 +24,9 @@ Scaffold(
 }
 ```
 
-```
-┌─────────────────────────────┐
-│         topBar                │
-├─────────────────────────────┤
-│                                │
-│                                │
-│         contenido               │
-│                            (FAB)│
-│                                │
-├─────────────────────────────┤
-│         bottomBar              │
-└─────────────────────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/scaffold-anatomia.svg" alt="Anatomía de un Scaffold: topBar, contenido, botón flotante, snackbarHost y bottomBar" style={{maxWidth: '560px', width: '100%'}} />
+</div>
 
 Nótese la firma: `Scaffold` recibe varios parámetros con nombre (las distintas zonas) y, como último parámetro (*trailing lambda*, visto en la primera página del tema), el contenido principal — con la particularidad de que ese lambda recibe un argumento, `paddingValues`, con el espacio que hay que respetar para no invadir las barras.
 
@@ -71,11 +61,9 @@ Scaffold(
 ) { padding -> /* ... */ }
 ```
 
-```
-┌─────────────────────────────┐
-│ ☰   Mi aplicación        🔍  │
-└─────────────────────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/topappbar.svg" alt="TopAppBar con navigationIcon, título y actions" style={{maxWidth: '440px', width: '100%'}} />
+</div>
 
 ---
 
@@ -104,16 +92,9 @@ Scaffold(
 ) { padding -> /* ... */ }
 ```
 
-```
-┌─────────────────────────────┐
-│                                │
-│         contenido               │
-│                                │
-├─────────────────────────────┤
-│   🏠           👤              │
-│  Inicio        Perfil          │
-└─────────────────────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/navigationbar.svg" alt="NavigationBar inferior con Inicio y Perfil" style={{maxWidth: '560px', width: '100%'}} />
+</div>
 
 :::note
 Esto todavía no es navegación de verdad
@@ -145,16 +126,9 @@ ModalNavigationDrawer(
 }
 ```
 
-```
-┌──────────┬──────────────────┐
-│  Menú     │  ☰  Mi aplicación │
-│ ─────    ├──────────────────┤
-│ Ajustes   │                    │
-│ Perfil    │     contenido       │
-│ Salir     │                    │
-└──────────┴──────────────────┘
-   (desplegado desde el borde)
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/drawer.svg" alt="Menú lateral desplegado sobre la pantalla oscurecida" style={{maxWidth: '620px', width: '100%'}} />
+</div>
 
 El icono de "hamburguesa" (`Icons.Default.Menu`) que se colocó antes en `navigationIcon` del `topBar` es, típicamente, el que dispara la apertura de este menú.
 
@@ -203,16 +177,9 @@ Scaffold(
 ) { padding -> /* ... */ }
 ```
 
-```
-┌─────────────────────────────┐
-│                                │
-│         contenido               │
-│                                │
-│ ┌─────────────────────────┐ │
-│ │ Elemento añadido   DESHACER│ │
-│ └─────────────────────────┘ │
-└─────────────────────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/snackbar.svg" alt="Snackbar con mensaje y acción DESHACER en la parte inferior" style={{maxWidth: '600px', width: '100%'}} />
+</div>
 
 :::note
 `rememberCoroutineScope` y `launch` se dan por sabidos aquí
@@ -242,6 +209,6 @@ flowchart TD
 | `snackbarHost` | `SnackbarHost` | Avisos breves y temporales |
 | contenido | lo que se quiera (`Column`, `LazyColumn`...) | El cuerpo real de la pantalla |
 
-<NextPageButton to="/tema-3/f-mockup-catalogo-apps">
-Leer un mockup: catálogo de aplicaciones
+<NextPageButton to="/tema-3/j-navegacion-basica">
+Navegación (I): NavGraph y rutas tipadas
 </NextPageButton>

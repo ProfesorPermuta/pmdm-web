@@ -104,13 +104,9 @@ flowchart LR
 
 La regla clave es la **dirección del flujo**: el estado baja hacia la vista, los eventos suben hacia el ViewModel. Es lo que se conoce como **flujo de datos unidireccional**.
 
-```
-         estado ↓                 ↑ eventos
-   ┌───────────────┐      ┌───────────────┐
-   │   ViewModel   │ ───▶ │     View      │
-   │               │ ◀─── │  (composable) │
-   └───────────────┘      └───────────────┘
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_3_diagramas/mvvm-flujo.svg" alt="El estado baja del ViewModel a la View y los eventos suben" style={{maxWidth: '640px', width: '100%'}} />
+</div>
 
 La vista **nunca modifica el estado directamente**: solo muestra lo que recibe y, cuando el usuario hace algo, llama a una función del ViewModel.
 

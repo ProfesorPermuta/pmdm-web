@@ -126,26 +126,9 @@ Esto no es persistencia
 
 ## Diagrama de transición de estados
 
-```mermaid
-stateDiagram-v2
-    [*] --> onCreate
-    onCreate --> onStart
-    onStart --> onResume
-    onResume --> onPause: el usuario deja de interactuar
-    onPause --> onResume: vuelve a primer plano
-    onPause --> onStop
-    onStop --> onRestart: el usuario vuelve a la app
-    onRestart --> onStart
-    onStop --> onDestroy
-    onDestroy --> [*]
-
-    note right of onResume
-        La Activity está en uso
-    end note
-    note right of onDestroy
-        La Activity muere
-    end note
-```
+<div style={{textAlign: 'center'}}>
+  <img src="/img/tema_2_diagramas/ciclo-vida-activity.svg" alt="Ciclo de vida de una Activity con los bucles onPause a onResume y onStop a onRestart a onStart" style={{maxWidth: '640px', width: '100%'}} />
+</div>
 
 ---
 
