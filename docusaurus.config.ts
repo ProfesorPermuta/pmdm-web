@@ -23,12 +23,13 @@ const config: Config = {
   },
 
   // Set the production url of your site here
-  url: 'https://permuta.github.io/',
+  // En GitHub Actions se definen SITE_URL y BASE_URL (ver .github/workflows/deploy.yml)
+  url: process.env.SITE_URL ?? 'https://profesorpermuta.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
-  baseUrl: '/',
+  baseUrl: process.env.BASE_URL ?? '/',
 
-  organizationName: 'permuta',
-  projectName: 'web-pmdm',
+  organizationName: 'ProfesorPermuta',
+  projectName: 'pmdm-web',
 
   onBrokenLinks: 'throw',
 
