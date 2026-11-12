@@ -1,6 +1,7 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 import type {Config} from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import remarkBaseUrl from './src/remark/baseUrl';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
@@ -51,6 +52,9 @@ const config: Config = {
         // Los plugins de docs y blog quedan desactivados.
         docs: false,
         blog: false,
+        pages: {
+          remarkPlugins: [[remarkBaseUrl, {baseUrl: process.env.BASE_URL ?? '/'}]],
+        },
         theme: {
           customCss: './src/css/custom.css',
         },

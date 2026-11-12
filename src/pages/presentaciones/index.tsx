@@ -1,6 +1,7 @@
 import type {ReactNode} from 'react';
 import Layout from '@theme/Layout';
 import Heading from '@theme/Heading';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 import styles from '../index.module.css';
 
@@ -33,6 +34,7 @@ const PRESENTACIONES: Presentacion[] = [
 
 /* ─── Tarjeta de presentación ───────────────────────────────── */
 function PresentacionCard({presentacion}: {presentacion: Presentacion}) {
+  const href = useBaseUrl(presentacion.href);
   return (
     <div className={styles.temaCard} style={{borderTopColor: presentacion.color}}>
       <div className={styles.temaCardHeader}>
@@ -40,7 +42,7 @@ function PresentacionCard({presentacion}: {presentacion: Presentacion}) {
           T{presentacion.n}
         </span>
         <Heading as="h3" className={styles.temaTitle}>
-          <a href={presentacion.href} target="_blank" rel="noreferrer" style={{color: presentacion.color}}>
+          <a href={href} target="_blank" rel="noreferrer" style={{color: presentacion.color}}>
             {presentacion.title}
           </a>
         </Heading>
