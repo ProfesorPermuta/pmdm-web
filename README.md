@@ -2,6 +2,8 @@
 
 Apuntes del módulo 0489 (CS DAM), construidos con [Docusaurus](https://docusaurus.io/).
 
+Publicada con github pages en: [Página web](https://profesorpermuta.github.io/web-pmdm/)
+
 ## Instalación
 
 ```bash
@@ -56,3 +58,5 @@ El modal de novedades muestra la versión más alta; la página `/changelogs` li
 - `src/components/WhatsNewModal` — modal de novedades de la última versión.
 
 Ninguno está montado todavía; para usarlos hay que hacer swizzle del `Layout` o incluirlos en las páginas.
+
+
