@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SITE_URL: https://profesorpermuta.github.io
-      BASE_URL: /pmdm-web/
+      BASE_URL: /web-pmdm/
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
